@@ -1,5 +1,3 @@
-import java.util.*;
-
 /**
  * Objeto que representa al cliente
  */
@@ -40,8 +38,8 @@ public class Cliente {
 
 	@Override
 	public String toString() {
-		return "Cliente [nif=" + nif + ", \n\t\t\t\t\t\tnmbr=" + nmbr + ", \n\t\t\t\t\t\tapllds=" + apllds
-				+ ", \n\t\t\t\t\t\ttlfn=" + tlfn + ", \n\t\t\t\t\t\teml=" + eml + ", \n\t\t\t\t\t\tdmcl=" + dmcl + "]";
+		return "Cliente [nif=" + nif + ", \n\t nmbr=" + nmbr + ", \n\t apllds=" + apllds
+				+ ", \n\t tlfn=" + tlfn + ", \n\t eml=" + eml + ", \n\t dmcl=" + dmcl + "]";
 	}
 
 	/**

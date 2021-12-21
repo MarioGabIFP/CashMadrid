@@ -1,3 +1,5 @@
+import java.util.*;
+
 /**
  * 
  */
@@ -9,63 +11,31 @@
 public class Transferencia {
 	private Cuenta origen;
 	private Cuenta destino;
-	private double saldo;
+	private Date fTransf;
+	private double imp;
 	
 	/**
+	 * Constructor vacío
+	 */
+	public Transferencia() {}
+
+	/**
+	 * Constructor con datos
 	 * @param origen
 	 * @param destino
-	 * @param saldo
+	 * @param fTransf
+	 * @param imp
 	 */
-	public Transferencia(Cuenta origen, Cuenta destino, double saldo) {
+	public Transferencia(Cuenta origen, Cuenta destino, Date fTransf, double imp) {
 		this.origen = origen;
 		this.destino = destino;
-		this.saldo = saldo;
-	}
-
-	/**
-	 * @return the origen
-	 */
-	public Cuenta getOrigen() {
-		return origen;
-	}
-
-	/**
-	 * @param origen the origen to set
-	 */
-	public void setOrigen(Cuenta origen) {
-		this.origen = origen;
-	}
-
-	/**
-	 * @return the destino
-	 */
-	public Cuenta getDestino() {
-		return destino;
-	}
-
-	/**
-	 * @param destino the destino to set
-	 */
-	public void setDestino(Cuenta destino) {
-		this.destino = destino;
-	}
-
-	/**
-	 * @return the saldo
-	 */
-	public double getSaldo() {
-		return saldo;
-	}
-
-	/**
-	 * @param saldo the saldo to set
-	 */
-	public void setSaldo(double saldo) {
-		this.saldo = saldo;
+		this.fTransf = fTransf;
+		this.imp = imp;
 	}
 
 	@Override
 	public String toString() {
-		return "Transferencia [origen=" + origen + ", destino=" + destino + ", saldo=" + saldo + "]";
+		return "Transferencia [origen=" + origen + ", \n\t\t\t\t\t\tdestino=" + destino + ", \n\t\t\t\t\t\tfTransf="
+				+ fTransf + ", \n\t\t\t\t\t\timp=" + imp + "]";
 	}
 }

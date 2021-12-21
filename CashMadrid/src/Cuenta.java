@@ -17,79 +17,107 @@ public class Cuenta {
 	private Cliente titular; // El cliente como tal
 	private double saldo; // NIF del Trabajador
 	private Date fechaApertura; // Fecha de inicio de contrato Apertura de la cuenta
+	private Date fechaCierre; // Fecha de inicio de contrato Apertura de la cuenta
 	
 	/**
-	 * Constructor vacío
+	 * Constructor sin datos
 	 */
-	public Cuenta() {
-	}
+	public Cuenta(){}
 	
 	/**
-	 * Constructor con datos, a emitir, la fecha se genera automaticamente.
-	 * @param numero
+	 * Constructor con datos
+	 * @param iban
+	 * @param nmbrbnc
 	 * @param titular
 	 * @param saldo
+	 * @param fechaApertura
+	 * @param fechaCierre
 	 */
-	public Cuenta(String numero, Cliente titular, double saldo) {
-		this.iban = numero;
+	public Cuenta(String iban, String nmbrbnc, Cliente titular, double saldo) {
+		this.iban = iban;
+		this.nmbrbnc = nmbrbnc;
 		this.titular = titular;
 		this.saldo = saldo;
 		this.fechaApertura = new Date();
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Cuenta [iban=" + iban + ", \n\t\t\t\t\t\tnmbrbnc=" + nmbrbnc + ", \n\t\t\t\t\t\ttitular=" + titular
+				+ ", \n\t\t\t\t\t\tsaldo=" + saldo + ", \n\t\t\t\t\t\tfechaApertura=" + fechaApertura
+				+ ", \n\t\t\t\t\t\tfechaCierre=" + fechaCierre + "]";
+	}
+
 	/**
-	 * Constructor con datos, a recibir
+	 * @return the iban
 	 */
-	
-	/**
-	 * @return the numero
-	 */
-	public String getNumero() {
+	public String getIban() {
 		return iban;
 	}
-	
+
 	/**
-	 * @param numero the numero to set
+	 * @return the nmbrbnc
 	 */
-	public void setNumero(String numero) {
-		this.iban = numero;
+	public String getNmbrbnc() {
+		return nmbrbnc;
 	}
-	
+
 	/**
 	 * @return the titular
 	 */
 	public Cliente getTitular() {
 		return titular;
 	}
-	
-	/**
-	 * @param titular the titular to set
-	 */
-	public void setTitular(Cliente titular) {
-		this.titular = titular;
-	}
-	
+
 	/**
 	 * @return the saldo
 	 */
 	public double getSaldo() {
 		return saldo;
 	}
-	
-	/**
-	 * @param saldo the saldo to set
-	 */
-	public void setSaldo(double saldo) {
-		this.saldo = saldo;
-	}
-	
+
 	/**
 	 * @return the fechaApertura
 	 */
 	public Date getFechaApertura() {
 		return fechaApertura;
 	}
-	
+
+	/**
+	 * @return the fechaCierre
+	 */
+	public Date getFechaCierre() {
+		return fechaCierre;
+	}
+
+	/**
+	 * @param iban the iban to set
+	 */
+	public void setIban(String iban) {
+		this.iban = iban;
+	}
+
+	/**
+	 * @param nmbrbnc the nmbrbnc to set
+	 */
+	public void setNmbrbnc(String nmbrbnc) {
+		this.nmbrbnc = nmbrbnc;
+	}
+
+	/**
+	 * @param titular the titular to set
+	 */
+	public void setTitular(Cliente titular) {
+		this.titular = titular;
+	}
+
+	/**
+	 * @param saldo the saldo to set
+	 */
+	public void setSaldo(double saldo) {
+		this.saldo = saldo;
+	}
+
 	/**
 	 * @param fechaApertura the fechaApertura to set
 	 */
@@ -97,9 +125,10 @@ public class Cuenta {
 		this.fechaApertura = fechaApertura;
 	}
 
-	@Override
-	public String toString() {
-		return "Cuenta [numero=" + iban + ", titular=" + titular + ", saldo=" + saldo + ", fechaApertura="
-				+ fechaApertura + "]";
+	/**
+	 * @param fechaCierre the fechaCierre to set
+	 */
+	public void setFechaCierre(Date fechaCierre) {
+		this.fechaCierre = fechaCierre;
 	}
 }
