@@ -2,46 +2,97 @@ import java.sql.*;
 import java.util.*;
 
 /**
+ * Objeto Query, aqui se encuentran las funciones correspondientes para realizar las querys a la base de datos.
  * 
- */
-
-/**
  * @author Mario Gabriel Núñez Alcázar de Velasco
- *
  */
 public class Query {
+	/**
+	 * Columna/s sobre las que se realizará la query solicitada.
+	 */
 	private String cols;
-	private String tab;
-	private String type;
+	/**
+	 * Tabla/s sobre la que se realizará la query solicitada.
+	 */
+	private Tab tab;
+	/**
+	 * Tipo de query solicitada.
+	 */
+	private Statement type;
+	/**
+	 * Modo de retorno de los datos.
+	 */
 	private Display to;
 	
+	/**
+	 * Resultado de la Query realizada.
+	 * Por defecto se establece a [null].
+	 */
 	public static ResultSet result = null;
+	/**
+	 * Metadata del resultado de la Query realizada.
+	 * Por defecto se establece a [null].
+	 */
 	public static ResultSetMetaData resultmtdt = null;
-	public static Conexion conexion = new Conexion();
+	/**
+	 * Declaracion del objeto conexion.
+	 * Realizará la conexion a la base de datos.
+	 */
+	Conexion conexion = new Conexion();
 	
 	/**
-	 * @param cols
-	 * @param tab
+	 * Constructor de la Query.
+	 * 
+	 * <br>Se usará para establecer los datos con los que realizaremos la query. 
+	 * 
+	 * @param cols - Columna/s sobre las que se realizará la query solicitada.
+	 * @param tab - Tabla/s sobre la que se realizará la query solicitada.
+	 * @param type - Tipo de query solicitada.
+	 * @param to - Modo de retorno de los datos.
 	 */
-	public Query(String cols, String tab, String type, Display to) {
-		this.cols = cols;
-		this.tab = tab;
-		this.type = type.toUpperCase();
-		this.to = to;
+	public Query(String cols, Tab tab, Statement type, Display to) {
+		this.cols = cols;//Recojemos las columnas solicitadas
+		this.tab = tab;//Recojemos la tabla solicitada
+		this.type = type;//Recogemos el tipo de Query Solicitada
+		this.to = to;//Recogemos el modo de retorno de los datos
 	}
 	
+	/**
+	 * Metodo que se encargará de ejecutar la query solicitada y devolver los datos
+	 * 
+	 * @return Object[] - Array de objetos, retornará el Resultado de la Query realizada
+	 */
 	public Object[] execute() {
+		//Conectamos con la base de datos
+		conexion.conect();
+		
+		//Evaluamos el tipo de query solicitado
 		switch (this.type) {
-		case "SELECT":
-			return select(this.cols, this.tab);
-		default:
-			throw new IllegalArgumentException("Valor inesperado: " + this.type);
+		case SELECT: //En el caso de haber solicitado un Select
+			/*
+			 * Llamamos a la funcion encargada de ejecutar el Select y guardamos el resultado
+			 * en un array de Objetos
+			 */
+			Object [] sel = select(this.cols, this.tab, this.type);
+			
+			//Desconectamos de la base de datos
+			conexion.desconexion();
+			
+			//Evaluamos el tipo de retorno solicitado
+			if (this.to == Display.CONSOLE_LOG) {//Si se solicta mostrar el resultado en consola
+				System.out.println(Arrays.toString(sel) + "\n");//Mostramos el resultado en consola
+			}
+			//De todas formas
+			return sel;//Retornamos el resultado de la Query en formato Object
+		default://En el caso de que no exista la opcion
+			throw new IllegalArgumentException("Valor inesperado: " + this.type);//retornamos Excepcion
 		}
 	}
 	
-	private Object[] select(String cols, String tab) {
+	
+	private Object[] select(String cols, Tab tab, Statement type) {
 		Object[] resul = new Object[1];
-		String query = "SELECT " + cols + " FROM " + tab;
+		String query = type + " " + cols + " FROM " + tab;
 		PreparedStatement statment = null;
 		result = null;
 		
@@ -62,8 +113,8 @@ public class Query {
 			try {
 				int i = 0;
 				while(result.next() == true) {
-					switch (this.to.toString()) {
-						case "CONSOLE_LOG":
+					switch (this.to) {
+						case CONSOLE_LOG:
 							int y = 0;
 							String[] reg = new String[1];
 							
@@ -77,7 +128,7 @@ public class Query {
 							resul[i] = Arrays.toString(reg);
 							i++;
 							break;
-						case "OBJECT":
+						case OBJECT:
 							Cliente cli = new Cliente();
 							for (int p = 1;p <= resultmtdt.getColumnCount();p++) {
 								switch (resultmtdt.getColumnName(p).toUpperCase()) {
@@ -99,13 +150,11 @@ public class Query {
 									case "DOM":
 										cli.setDmcl(result.getString(resultmtdt.getColumnName(p)));
 										break;
-									default:
-										throw new IllegalArgumentException("Unexpected value: " + resultmtdt.getColumnName(p));
 								}
-								resul = Arrays.copyOf(resul, i + 1);
-								resul[i] = cli;
-								i++;
 							}
+							resul = Arrays.copyOf(resul, i + 1);
+							resul[i] = cli;
+							i++;
 							break;
 						default:
 							throw new IllegalArgumentException("Valor inesperado: " + to);
