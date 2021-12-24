@@ -12,20 +12,12 @@ public class Main {
 	 * @param args - Argumento principal
 	 */
 	public static void main(String[] args) {
-		/*
-		 * Select para mostrar todos los datos de la tabla clientes por consola
-		 */
-		//Establecemos los datos de la query y la modalidad de retorno
-		Query querySTR = new Query("*", Tab.CLIENTES, Statement.SELECT, Display.CONSOLE_LOG);
-		//Ejecutamos los la query, el resultado se mostrará en la consola automaticamente
- 		querySTR.execute();
-		
  		/*
  		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
  		 * Cada registro de la tabla corresponderá a un objeto. 
  		 */
  		//Establecemos los datos de la query y la modalidad de retorno
-		Query queryOBJ = new Query("*", Tab.CLIENTES, Statement.SELECT, Display.OBJECT);
+		Query queryOBJ = new Query("*", Tab.CLIENTES, Statement.SELECT);
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
 		Object[] obj = queryOBJ.execute();
 		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
