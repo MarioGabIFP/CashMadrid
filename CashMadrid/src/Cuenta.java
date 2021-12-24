@@ -15,7 +15,7 @@ public class Cuenta {
 	/*
 	 * **********************************************************
 	 * Formato del IBAN de la cuenta: ESXX XXXX XXXX XX XXXXXXXXX
-	 *                                 4     4    4   2     9
+	 *                                 4     4    4   2     10
 	 * ********************************************************** 
 	 */
 	private String iban;
