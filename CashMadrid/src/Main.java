@@ -1,42 +1,36 @@
-import java.util.*;
-import javax.swing.*;
+import java.awt.EventQueue;
+import java.util.Arrays;
 
 /**
- * Clase principal
- *  
+ * 
+ */
+
+/**
  * @author Mario Gabriel Núñez Alcázar de Velasco
+ *
  */
 public class Main {
+
 	/**
-	 * Datos de conexion a la base de datos
-	 */
-	public static String ConStr;
-	
-	/**
-	 * Método principal
+	 * Launch the application.
 	 * 
-	 * @param args - Argumento principal
+	 * @param args
 	 */
 	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Panel window = new Panel();
+					window.getFrame().setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	private void obtnrCli() {
 		/*
-		 * Nada más ejecutar el programa, pedimos al usuario que especifique los 
-		 * datos de conexion a la base de datos.
-		 */
-		/*
-		 * Datos de acceso a la base de datos.
-		 */
-		JTextField nomBDD = new JTextField(); 
-		JTextField userBDD = new JTextField(); 
-		JTextField passwordBDD = new JPasswordField();
-		
-		//Declaramos el objeto con los input de la pantalla.
-		Object[] inputs = {"Nombre: ", nomBDD, "Usuario: ", userBDD, "Contraseña: ", passwordBDD};
-		
-		//Mostramos input
-		int inpBool = JOptionPane.showConfirmDialog(null, inputs, "Introduce los datos de conexion a la base de datos", JOptionPane.OK_OPTION);
-		
-		ConStr = nomBDD.getText() + ";" + userBDD.getText() + ";" + passwordBDD.getText();
- 		/*
  		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
  		 * Cada registro de la tabla corresponderá a un objeto. 
  		 */
