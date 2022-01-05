@@ -3,7 +3,7 @@
  * 
  * @author Mario Gabriel Núñez Alcázar de Velasco
  */
-public enum Tab {
+public enum Data {
 	/**
 	 * Tabla clientes de la base de datos
 	 */
@@ -11,7 +11,7 @@ public enum Tab {
 	/**
 	 * Tabla cuentas de la Base de datos
 	 */
-	CUENTAS,
+	CUENTA,
 	/**
 	 * Tabla de Transferencias de la base de datos
 	 */

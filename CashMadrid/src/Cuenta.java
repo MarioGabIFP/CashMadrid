@@ -67,6 +67,25 @@ public class Cuenta {
 		this.saldo = saldo; //Obtenemos el saldo de la cuenta
 		this.fechaApertura = new Date(); //Obtenemos la fecha de hoy como fecha de apertura de la cuenta
 	}
+	
+	/**
+	 * Constructor con datos para descargar datos de objetos Cuenta situados en la Base de Datos.
+	 * 
+	 * @param iban - Codigo IBAN de la cuenta.
+	 * @param nmbrbnc - Nombre de la entidad bancaria.
+	 * @param titular - titular de la cuenta; Objeto tipo Cliente.
+	 * @param saldo - Saldo de la cuenta bancaria.
+	 * @param fechaApertura - Fecha de apertura de la cuenta bancaría
+	 * @param fechaCierre - Fecha de cancelacion/cierre de la cuenta bancaria.
+	 */
+	public Cuenta(String iban, String nmbrbnc, Cliente titular, double saldo, Date fechaApertura, Date fechaCierre) {
+		this.iban = iban; //Obtenemos el IBAN de la cuenta
+		this.nmbrbnc = nmbrbnc; //Obtenemos el nombre de la entidad bancaria
+		this.titular = titular; //Obtenemos el titular de la cuenta
+		this.saldo = saldo; //Obtenemos el saldo de la cuenta
+		this.fechaApertura = fechaApertura; //Obtenemos la fecha de apertura de la cuenta
+		this.fechaCierre = fechaCierre; //Obtenemos la fecha de apertura de la cuenta
+	}
 
 	/**
 	 * Clase para mostrar en consola los diferentes objetos creados con esta clase.

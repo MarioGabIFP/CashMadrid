@@ -14,11 +14,19 @@ public class Query {
 	/**
 	 * Tabla/s sobre la que se realizará la query solicitada.
 	 */
-	private Tab tab;
+	private String tab;
 	/**
 	 * Tipo de query solicitada.
 	 */
 	private Statement type;
+	/**
+	 * Modificador de la query
+	 */
+	private String mod;
+	/**
+	 * DATO A EXTRAER
+	 */
+	private Data dat;
 	
 	/**
 	 * Resultado de la Query realizada.
@@ -54,10 +62,12 @@ public class Query {
 	 * @param tab - Tabla/s sobre la que se realizará la query solicitada.
 	 * @param type - Tipo de query solicitada.
 	 */
-	public Query(String cols, Tab tab, Statement type) {
+	public Query(String cols, String tab, Statement type, String mod, Data dat) {
 		this.cols = cols;//Recojemos las columnas solicitadas
-		this.tab = tab;//Recojemos la tabla solicitada
+		this.tab = tab.toUpperCase();//Recojemos la tabla solicitada
 		this.type = type;//Recogemos el tipo de Query Solicitada
+		this.mod = mod;//recogemos los modificadores especificados en la query.
+		this.dat = dat;//Recogemos el tipo de dato que queremos extraer
 	}
 	
 	/**
@@ -73,7 +83,12 @@ public class Query {
 		switch (this.type) {
 		case SELECT: //En el caso de haber solicitado un Select
 			//Construimos la query tal y como se ha solicitado
-			String query = this.type + " " + this.cols + " FROM " + this.tab;
+			String query;
+			if(mod != null) {
+				query = this.type + " " + this.cols + " FROM " + this.tab + " " + this.mod + ";";
+			} else {
+				query = this.type + " " + this.cols + " FROM " + this.tab + ";";
+			}
 			
 			try {
 				//Preparamos y ejecutamos la query construida
@@ -86,7 +101,7 @@ public class Query {
 					int i = 0;//Damos de alta el contador para recorrer los registros obtenidos
 					
 					//Evaluamos la tabla sobre al que se ha hecho la Query
-					switch (this.tab) {
+					switch (this.dat) {
 					case CLIENTES://Si es la tabla clientes
 						/**
 						 * Bucle while por el que recorremos los registros obtenidos
@@ -138,7 +153,64 @@ public class Query {
 						}
 						
 						break;
-					case CUENTAS:
+					case CUENTA:
+						/**
+						 * Bucle while por el que recorremos los registros obtenidos
+						 */
+						while(result.next() == true) {//Si hay datos en el registro siguiente 
+							//Declaramos un objeto de tipo Cuenta.
+							Cuenta cu = new Cuenta();
+							
+							/*
+							 * Recorremos las columnas del registro actual en busca de los datos 
+							 * correespondientes para rellenar el objeto
+							 */
+							for (int p = 1;p <= resultmtdt.getColumnCount();p++) {
+								//Evaluamos el nombre de la columna actual
+								switch (resultmtdt.getColumnName(p).toUpperCase()) {
+									case "NUMERO_CUENTA"://Si la columna es 'Numero_cuenta'
+										//extraemos el valor en el campo 'IBAN' del objeto Cuenta
+										cu.setIban(result.getString(resultmtdt.getColumnName(p)));
+										break;
+									case "NBANC"://Si la columna es 'NBanc'
+										//extraemos el valor en el campo 'Nmbrbnc' del objeto Cliente
+										cu.setNmbrbnc(result.getString(resultmtdt.getColumnName(p)));
+										break;
+									case "DNI"://Si la columna es 'DNI'
+										/*
+										 * Extraemos el Cliente correspondiente al DNI del campo 'DNI' del objeto Cuenta
+										 * dentro del Objeto Cliente.
+										 */
+										/*
+								 		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
+								 		 * Cada registro de la tabla corresponderá a un objeto. 
+								 		 */
+								 		//Establecemos los datos de la query y la modalidad de retorno
+										Query queryOBJ = new Query("*", "CLIENTES", Statement.SELECT, "WHERE DNI = '" + result.getString(resultmtdt.getColumnName(p)) + "'", Data.CLIENTES);
+										//ejecutamos la query y recuperamos el resultado en un array de Objetos
+										Cliente clnt = (Cliente) queryOBJ.execute()[0];
+										//Establecemos el titular de la cuenta
+										cu.setTitular(clnt);
+										break;
+									case "FINI"://Si la columna es 'TEL'
+										//extraemos el valor en el campo 'Tlfn' del objeto Cliente
+										cu.setFechaApertura(result.getDate(resultmtdt.getColumnName(p)));
+										break;
+									case "FFIN"://Si la columna es 'EMAIL'
+										//extraemos el valor en el campo 'Eml' del objeto Cliente
+										cu.setFechaCierre(result.getDate(resultmtdt.getColumnName(p)));
+										break;
+								}
+							}
+							
+							//Aumentamos el tamaño del Array que contendra los registros Extraidos en formato Object
+							resul = Arrays.copyOf(resul, i + 1);
+							//Insertamos el Objeto Cliente con los datos extraidos del registro actual
+							resul[i] = cu;
+							//Aumentamos el contador de registro en '1'
+							i++;
+						}
+						
 						break;
 					case TRANSFERENCIAS:
 						break;
