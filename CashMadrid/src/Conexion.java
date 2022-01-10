@@ -1,5 +1,7 @@
 import java.sql.*;
 
+import javax.swing.JOptionPane;
+
 /**
  * Clase para conectar a la base de datos; esta clase es la que se encargará de realizar al conexión a la base de datos.
  * 
@@ -13,11 +15,11 @@ public class Conexion {
 	/**
 	 * Nombre de usuario de acceso a la base de datos.
 	 */
-	private String usuario = "root"; 
+	private String usuario; 
 	/**
 	 * Contraseña de acceso a la base de datos.
 	 */
-	private String contraseña = "ladesiempre";
+	private String contraseña;
 	/**
 	 * URL de acceso a la base de datos.
 	 */
@@ -33,6 +35,17 @@ public class Conexion {
 	 */
 	public Conexion() {}
 	
+	/**
+	 * Constructor con datos de entrada, se usará para establecer el objeto conexion.
+	 * 
+	 * @param usuario - el usuario de acceso a la base de datos.
+	 * @param contraseña - la contraseña de acceso a la base de datos.
+	 */
+	public Conexion(String usuario, String contraseña) {
+		this.usuario = usuario;
+		this.contraseña = contraseña;
+	}
+
 	/**
 	 * Metodo conect, se usará para establecer la conexion a la base de datos.
 	 */
@@ -51,6 +64,11 @@ public class Conexion {
 				//Mostramos error en el caso de no poder conectar al abase de datos solicitada
 				System.out.println("Unable to conected to: " + url);
 				System.out.println("SQL exception returned: " + e);
+				JOptionPane.showMessageDialog(null, 
+						                      "Usuario o contraseña incorrectos.\nSi ha olvidado su contraseña, pongase en contacto con el administrador de sistemas", 
+										      "CashMadrid", 
+										      0, 
+										      null);
 			}
 		} catch (ClassNotFoundException e) {
 			//En el caso de no cargar el DriverManager, mostramos error interno

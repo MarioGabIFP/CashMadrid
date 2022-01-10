@@ -1,3 +1,4 @@
+import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.GroupLayout.*;
@@ -18,11 +19,28 @@ public class Panel {
 	 * Tabla que contendrá los datos del cliente.
 	 */
 	private JTable cliData;
-
+	/**
+	 * Conexion con la base de datos.
+	 */
+	private Conexion conexion;
+	/**
+	 * Seleccion del DNI por parte del usuario
+	 */
+	private String slctnDNI;
+	/**
+	 * Combo Box que contendra los IBAN de las cuentas de los clientes
+	 */
+	private JComboBox<String> cueComboBox;
+	/**
+	 * ComboBox que contrendra los DNI de los clientes
+	 */
+	private JComboBox<String> cliComboBox;
+	
 	/**
 	 * Inicializamos el panel en la ventana.
 	 */
-	public Panel() {
+	public Panel(Conexion conexion) {
+		this.conexion = conexion;//Establecemos la conexion con la base de datos.
 		initialize(); //llamamos al método que construirá la ventana
 	}
 
@@ -62,7 +80,7 @@ public class Panel {
 		cliSelLabel.setHorizontalAlignment(SwingConstants.TRAILING);//Establecemos la alineación Horizontal como colgante ("TRAILING")
 		
 		//Creamos el ComboBox con la lista de Clientes en la base de datos, selección por NIF
-		JComboBox<String> cliComboBox = new JComboBox<String>();//Declaramos el Combobox con formato ComboBox Editable y argumentos String 
+		cliComboBox = new JComboBox<String>();//Declaramos el Combobox con formato ComboBox Editable y argumentos String 
 
 		//Declaramos el modelo de datos insertando el Array resultante de "obtnrNif(obtnrCli()))" y lo insertamos en el ComboBox
 		cliComboBox.setModel(new DefaultComboBoxModel<String>(obtnrNif(obtnrCli())));
@@ -78,11 +96,7 @@ public class Panel {
 		cueSelLabel.setHorizontalAlignment(SwingConstants.TRAILING);//Establecemos la alineación Horizontal como colgante ("TRAILING")
 		
 		//Creamos el ComboBox con la lista de Cuentas que pertenecen al cliente seleccionado, selección por IBAN
-		JComboBox<String> cueComboBox = new JComboBox<String>();//Declaramos el Combobox con formato de argumentos String 
-		
-		//Declaramos el modelo de datos insertando el Array resultante de "obtnrIBAN(obtnrCu(cliComboBox.getSelectedItem().toString())))" y lo insertamos en el ComboBox
-		//Con "cliComboBox.getSelectedItem().toString()" Obtenemos el DNI seleccionado en el ComboBox "Clientes"
-		cueComboBox.setModel(new DefaultComboBoxModel<String>(obtnrIBAN(obtnrCu(cliComboBox.getSelectedItem().toString()))));
+		cueComboBox = new JComboBox<String>();//Declaramos el Combobox con formato de argumentos String 
 		
 		cueComboBox.setEditable(false);//Establecemos el ComboBox como no editable.
 		cueSelLabel.setLabelFor(cueComboBox);//Enlazamos la etiqueta de Texto al ComboBox
@@ -93,57 +107,12 @@ public class Panel {
 		 */
 		JPanel dtPanel = new JPanel();//Declaramos el panel
 
-		//Obtenemos todos los datos del cliente seleccionado en el ComboBox
-		//Con "cliComboBox.getSelectedItem().toString()" Obtenemos el DNI seleccionado en el ComboBox "Clientes"
-		Cliente clie = obtnrUnCli(cliComboBox.getSelectedItem().toString());
-		
-		//Obtenemos todos los datos de la cuenta del cliente seleccionada
-		//Con "cueComboBox.getSelectedItem().toString()" Obtenemos el IBAN seleccionado en el ComboBox "Cuentas"
-		Cuenta cuen = obtnrUnCu(cueComboBox.getSelectedItem().toString());
-		
 		
 		/*
 		 * Creamos la Tabla que contendrá los datos del cliente y al cuenta seleccionados
 		 */
 		cliData = new JTable();//Declaramos la tabla 
 		
-		cliData.setModel(new DefaultTableModel( //Declaramos el Modelo de datos de la tabla
-			new Object[][] {//Declaramos objeto Array Object[][] que contendrá los registros de la tabla con los datos correspondientes
-				{"Datos de cliente", "****************"},//Cabecera que indicadora del inicio de los datos del cliente
-				{"Nombre", clie.getNmbr()},//Nombre del cliente
-				{"Apellidos", clie.getApllds()},//Apellidos del cliente
-				{"DNI/NIF/NIE", clie.getNif()},//DNI-NIF-NIE del cliente
-				{"Telefono", clie.getTlfn()},//Telefono del cliente
-				{"Email", clie.getEml()},//Email del Cliente 
-				{"Domicilio", clie.getDmcl()},//Domicilio del cliente
-				{"Datos de la cuenta bancaria", "****************"},//Cabecera que indicadora del inicio de los datos de la cuenta.
-				{"IBAN", cuen.getIban()},//IBAN de la cuenta.
-				{"Entidad Bancaria", cuen.getNmbrbnc()},//Nombre de la entidad bancaria de la cuenta.
-				{"Saldo", null},//Saldo de la cuenta.
-				{"Fecha Apertura", cuen.getFechaApertura()},//Fecha de Apertura de la cuenta
-				{"Fecha Cierre", cuen.getFechaCierre()}//Fecha de cliente de la cuenta (Si la cuenta esta activa, obtendremos null y la celda se mostrará vacía).
-			},
-			new String[] {//Declaramos el objeto Array String[] que contendrá los nombres internos de las columnas (estás no se mostrarán en la ventana).
-				"Dato", //Columna que contiene el nombre de los datos (Columna de la izquierda)
-				"Valor"//Columna que contiene el valor de los datos (Columna de la Derecha)
-			}
-		) {
-			/**
-			 * Serial Version de la Tabla
-			 */
-			private static final long serialVersionUID = 7927909933540332783L;//Declaramos el Serial Version como constante
-			
-			/*
-			 * Declaramos los tipos de datos de todas las celdas de la tabla.
-			 */
-			Class[] columnTypes = new Class[] {//Declaramos la clase columnTypes para establecer los tipos de datos 
-				String.class, //Para la primera columna establecemos las celdas como String 
-				String.class //Para la Segunda columna establecemos las celdas como String 
-			};
-			public Class getColumnClass(int columnIndex) {//Declaramos la clase que obtendrá el tipo de dato de la celda seleccionada
-				return columnTypes[columnIndex];//Devolvemos tipo de dato de la celda seleccionada
-			}
-		});
 		
 		/*
 		 * Agrupamos la tabla dentro del Panel "dtPanel".
@@ -195,6 +164,7 @@ public class Panel {
 		 * Aprietensé los machos, voy a colocar todo lo construido anteriormente en el Frame :') 
 		 */
 		GroupLayout groupLayout = new GroupLayout(getFrame().getContentPane());//Declaramos el objeto "GroupLayout" (Grupo de plantillas) rellenandolo con los datos del contenido del Frame. 
+		
 		
 		/*
 		 * Construimos la plantilla con todos los elementos construidos anteriormente y hubicandolo 
@@ -270,6 +240,27 @@ public class Panel {
 		);
 		
 		getFrame().getContentPane().setLayout(groupLayout);//insertamos la plantilla.
+		
+		
+		/*
+		 * Inicializamos todos los datos con valores de la base de datos.
+		 */
+		setData(cliComboBox.getSelectedItem().toString());
+		
+		/*
+		 * Creamos los ActionListener para escuchar los cambios realizados por parte del usuario
+		 */
+		cliComboBox.addActionListener(new ActionListener() {
+					
+			//Heredamos la SuperClass actionPerformed 
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				JComboBox<String> slctn = (JComboBox<String>) event.getSource();//Recojemos el evento y lo clonamos
+				slctnDNI = (String) slctn.getSelectedItem();//Obtenemos el evento seleccionado del ComboBox
+				
+				setData(slctnDNI);//Establecemos los datos correspondientes al nuevo DNI seleccionado
+			}
+		});
 	}
 
 	/**
@@ -300,7 +291,12 @@ public class Panel {
  		 * Cada registro de la tabla corresponderá a un objeto. 
  		 */
  		//Establecemos los datos de la query y la modalidad de retorno
-		Query queryOBJ = new Query("*", "Clientes", Statement.SELECT, null, Data.CLIENTES);
+		Query queryOBJ = new Query("*", 
+								   "Clientes", 
+								   Statement.SELECT, 
+								   null, 
+								   Data.CLIENTES, 
+								   conexion);
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
 		Object[] obj = queryOBJ.execute();
 		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
@@ -327,10 +323,19 @@ public class Panel {
 		 * Cada registro de la tabla corresponderá a un objeto. 
 		 */
 		//Establecemos los datos de la query y la modalidad de retorno
-		Query queryOBJ = new Query("*", "Clientes", Statement.SELECT, "where DNI = '" + dni + "'", Data.CLIENTES);
+		Query queryOBJ = new Query("*", 
+								   "Clientes", Statement.SELECT, 
+								   "where DNI = '" + dni + "'", Data.CLIENTES, 
+								   conexion);
 		
 		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
-		Cliente cli = (Cliente) queryOBJ.execute()[0];
+		Cliente cli = new Cliente();
+		try {
+			cli = (Cliente) queryOBJ.execute()[0];
+		} catch (Exception e) {
+			System.out.println("Error: " + e);
+			JOptionPane.showMessageDialog(null, "El cliente solicitado no se encuentra disponible o no existe", "CashMadrid", JOptionPane.ERROR_MESSAGE);
+		}
 		
 		//Retornamos los datos del cliente
 		return cli;
@@ -352,7 +357,8 @@ public class Panel {
 									"asignacion", 
 									Statement.SELECT, 
 									"left join clientes on asignacion.IdCli = Clientes.IdCli left join cuenta on asignacion.IdCu = cuenta.idcu where DNI = '" + dni + "'",
-									Data.CUENTA);
+									Data.CUENTA,
+									conexion);
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
 		Object[] obj = queryOBJ.execute();
 		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
@@ -383,7 +389,8 @@ public class Panel {
 								   "asignacion", 
 								   Statement.SELECT, 
 								   "left join cuenta on asignacion.IdCu = cuenta.idcu where concat(DigCon,Ent,Ofi,DigContr,NCue) = '" + iban + "'",
-								   Data.CUENTA);
+								   Data.CUENTA,
+								   conexion);
 		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
 		Cuenta cu = (Cuenta) queryOBJ.execute()[0];
 		
@@ -433,5 +440,104 @@ public class Panel {
 		}
 		
 		return iban;//Devolvemos el Array resultante. 
+	}
+	
+	/**
+	 * Funcion para rellenar los campos de la Ventana
+	 * 
+	 * @param slctnDNI - DNI del cliente seleccionado
+	 */
+	private void setData(String slctnDNI) {
+		//Declaramos el modelo de datos insertando el Array resultante de "obtnrIBAN(obtnrCu(slctnDNI)" y lo insertamos en el ComboBox
+		cueComboBox.setModel(new DefaultComboBoxModel<String>(obtnrIBAN(obtnrCu(slctnDNI))));
+		
+		//Obtenemos todos los datos del cliente seleccionado en el ComboBox
+		//Con "cliComboBox.getSelectedItem().toString()" Obtenemos el DNI seleccionado en el ComboBox "Clientes"
+		Cliente clie = obtnrUnCli(slctnDNI);
+				
+		//Obtenemos todos los datos de la cuenta del cliente seleccionada
+		//Con "cueComboBox.getSelectedItem().toString()" Obtenemos el IBAN seleccionado en el ComboBox "Cuentas"
+		Object slctnIBAN = cueComboBox.getSelectedItem();
+		if (slctnIBAN != null) {
+			Cuenta cuen = obtnrUnCu(slctnIBAN.toString());
+		
+			cliData.setModel(new DefaultTableModel( // Declaramos el Modelo de datos de la tabla.
+					new Object[][] { // Declaramos objeto Array Object[][] que contendrá los registros de la tabla con los datos correspondientes.
+							{ "Datos de cliente", "****************" }, // Cabecera que indicadora del inicio de los datos del cliente.
+							{ "Nombre", clie.getNmbr() }, // Nombre del cliente.
+							{ "Apellidos", clie.getApllds() }, // Apellidos del cliente.
+							{ "DNI/NIF/NIE", clie.getNif() }, // DNI-NIF-NIE del cliente.
+							{ "Telefono", clie.getTlfn() }, // Telefono del cliente.
+							{ "Email", clie.getEml() }, // Email del Cliente.
+							{ "Domicilio", clie.getDmcl() }, // Domicilio del cliente.
+							{ "Datos de la cuenta bancaria", "****************" }, // Cabecera que indicadora del inicio de los datos de la cuenta.
+							{ "IBAN", cuen.getIban() }, // IBAN de la cuenta.
+							{ "Entidad Bancaria", cuen.getNmbrbnc() }, // Nombre de la entidad bancaria de la cuenta.
+							{ "Saldo", null }, // Saldo de la cuenta.
+							{ "Fecha Apertura", cuen.getFechaApertura() }, // Fecha de Apertura de la cuenta.
+							{ "Fecha Cierre", cuen.getFechaCierre() } // Fecha de cliente de la cuenta (Si la cuenta esta activa, obtendremos null y la celda se mostrará vacía).
+					}, new String[] { // Declaramos el objeto Array String[] que contendrá los nombres internos de las columnas (estás no se mostrarán en la ventana).
+							"Dato", // Columna que contiene el nombre de los datos (Columna de la izquierda).
+							"Valor" // Columna que contiene el valor de los datos (Columna de la Derecha).
+					}) {
+				
+				/**
+				 * Serial Version de la Tabla
+				 */
+				private static final long serialVersionUID = 7927909933540332783L;// Declaramos el Serial Version como constante
+	
+				/*
+				 * Declaramos los tipos de datos de todas las celdas de la tabla.
+				 */
+				Class[] columnTypes = new Class[] { // Declaramos la clase columnTypes para establecer los tipos de datos
+						String.class, // Para la primera columna establecemos las celdas como String
+						String.class // Para la Segunda columna establecemos las celdas como String
+				};
+	
+				public Class getColumnClass(int columnIndex) {// Declaramos la clase que obtendrá el tipo de dato de la
+																// celda seleccionada
+					return columnTypes[columnIndex];// Devolvemos tipo de dato de la celda seleccionada
+				}
+			});
+		} else {
+			cliData.setModel(new DefaultTableModel( // Declaramos el Modelo de datos de la tabla.
+					new Object[][] { // Declaramos objeto Array Object[][] que contendrá los registros de la tabla con los datos correspondientes.
+							{ "Datos de cliente", "****************" }, // Cabecera que indicadora del inicio de los datos del cliente.
+							{ "Nombre", clie.getNmbr() }, // Nombre del cliente.
+							{ "Apellidos", clie.getApllds() }, // Apellidos del cliente.
+							{ "DNI/NIF/NIE", clie.getNif() }, // DNI-NIF-NIE del cliente.
+							{ "Telefono", clie.getTlfn() }, // Telefono del cliente.
+							{ "Email", clie.getEml() }, // Email del Cliente.
+							{ "Domicilio", clie.getDmcl() }, // Domicilio del cliente.
+							{ "Datos de la cuenta bancaria", "****************" }, // Cabecera que indicadora del inicio de los datos de la cuenta.
+							{ "IBAN", null }, // IBAN de la cuenta.
+							{ "Entidad Bancaria", null }, // Nombre de la entidad bancaria de la cuenta.
+							{ "Saldo", null }, // Saldo de la cuenta.
+							{ "Fecha Apertura", null }, // Fecha de Apertura de la cuenta.
+							{ "Fecha Cierre", null } // Fecha de cliente de la cuenta (Si la cuenta esta activa, obtendremos null y la celda se mostrará vacía).
+					}, new String[] { // Declaramos el objeto Array String[] que contendrá los nombres internos de las columnas (estás no se mostrarán en la ventana).
+							"Dato", // Columna que contiene el nombre de los datos (Columna de la izquierda).
+							"Valor" // Columna que contiene el valor de los datos (Columna de la Derecha).
+					}) {
+				
+				/**
+				 * Serial Version de la Tabla
+				 */
+				private static final long serialVersionUID = 7927909933540332783L;// Declaramos el Serial Version como constante
+	
+				/*
+				 * Declaramos los tipos de datos de todas las celdas de la tabla.
+				 */
+				Class[] columnTypes = new Class[] { // Declaramos la clase columnTypes para establecer los tipos de datos
+						String.class, // Para la primera columna establecemos las celdas como String
+						String.class // Para la Segunda columna establecemos las celdas como String
+				};
+	
+				public Class getColumnClass(int columnIndex) {// Declaramos la clase que obtendrá el tipo de dato de la
+																// celda seleccionada
+					return columnTypes[columnIndex];// Devolvemos tipo de dato de la celda seleccionada
+				}
+			});
+		}
 	}
 }

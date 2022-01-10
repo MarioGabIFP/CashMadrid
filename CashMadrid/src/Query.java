@@ -51,7 +51,7 @@ public class Query {
 	 * Declaracion del objeto conexion.
 	 * Realizará la conexion a la base de datos.
 	 */
-	Conexion conexion = new Conexion();
+	Conexion conexion;
 	
 	/**
 	 * Constructor de la Query.
@@ -62,12 +62,13 @@ public class Query {
 	 * @param tab - Tabla/s sobre la que se realizará la query solicitada.
 	 * @param type - Tipo de query solicitada.
 	 */
-	public Query(String cols, String tab, Statement type, String mod, Data dat) {
+	public Query(String cols, String tab, Statement type, String mod, Data dat, Conexion conexion) {
 		this.cols = cols;//Recojemos las columnas solicitadas
 		this.tab = tab.toUpperCase();//Recojemos la tabla solicitada
 		this.type = type;//Recogemos el tipo de Query Solicitada
 		this.mod = mod;//recogemos los modificadores especificados en la query.
 		this.dat = dat;//Recogemos el tipo de dato que queremos extraer
+		this.conexion = conexion;//cargamos la conexion con la base de datos.
 	}
 	
 	/**
@@ -82,6 +83,8 @@ public class Query {
 		//Evaluamos el tipo de query solicitado
 		switch (this.type) {
 		case SELECT: //En el caso de haber solicitado un Select
+			//Reinicializamos resultado
+			resul = new Object[0];
 			//Construimos la query tal y como se ha solicitado
 			String query;
 			if(mod != null) {
@@ -186,7 +189,12 @@ public class Query {
 								 		 * Cada registro de la tabla corresponderá a un objeto. 
 								 		 */
 								 		//Establecemos los datos de la query y la modalidad de retorno
-										Query queryOBJ = new Query("*", "CLIENTES", Statement.SELECT, "WHERE DNI = '" + result.getString(resultmtdt.getColumnName(p)) + "'", Data.CLIENTES);
+										Query queryOBJ = new Query("*", 
+																   "CLIENTES", 
+																   Statement.SELECT, 
+																   "WHERE DNI = '" + result.getString(resultmtdt.getColumnName(p)) + "'", 
+																   Data.CLIENTES, 
+																   conexion);
 										//ejecutamos la query y recuperamos el resultado en un array de Objetos
 										Cliente clnt = (Cliente) queryOBJ.execute()[0];
 										//Establecemos el titular de la cuenta
