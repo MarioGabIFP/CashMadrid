@@ -35,13 +35,53 @@ public class Panel {
 	 * ComboBox que contrendra los DNI de los clientes
 	 */
 	private JComboBox<String> cliComboBox;
+	/**
+	 * Array de Clientes
+	 */
+	private Cliente[] cli;
+	/**
+	 * Array de cuentas
+	 */
+	private Cuenta[] cu = new Cuenta[0];
 	
 	/**
 	 * Inicializamos el panel en la ventana.
 	 */
 	public Panel(Conexion conexion) {
 		this.conexion = conexion;//Establecemos la conexion con la base de datos.
+		crgrDts();//Cargamos los datos
 		initialize(); //llamamos al método que construirá la ventana
+	}
+
+	private void crgrDts() {
+		/*
+		 * Cargamos los Datos de los Clientes
+		 */
+		cli = obtnrCli();
+		
+		
+		/*
+		 * cargamos los datos de las cuentas
+		 */
+		for (Cliente c: cli) {//por cada cliente
+			String nif = c.getNif();//Obtenemos el dato NIF
+			
+			Cuenta[] tempArrCu = obtnrCu(nif);
+			
+			for (int y = 0;y < tempArrCu.length;y++) {
+				tempArrCu[y].setTitular(c);
+			}
+			
+			cu = Arrays.copyOf(cu, cu.length + tempArrCu.length);//aumentamos en 1 el tamaño del array
+			
+			int x = 0; //inicializamos un nuevo contador
+			for (int z = 0;z < cu.length;z++) {
+				if (cu[z] == null) {
+					cu[z] = tempArrCu[x];
+					x++;
+				}
+			}
+		}
 	}
 
 	/**
@@ -56,6 +96,7 @@ public class Panel {
 		
 		//Establecemos la accion a realizar cuando pulsamos el botón "Cerrar ventana" de Windows. 
 		getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+		
 		
 		/*
 		 * Construimos la Barra de herramientas
@@ -82,9 +123,6 @@ public class Panel {
 		//Creamos el ComboBox con la lista de Clientes en la base de datos, selección por NIF
 		cliComboBox = new JComboBox<String>();//Declaramos el Combobox con formato ComboBox Editable y argumentos String 
 
-		//Declaramos el modelo de datos insertando el Array resultante de "obtnrNif(obtnrCli()))" y lo insertamos en el ComboBox
-		cliComboBox.setModel(new DefaultComboBoxModel<String>(obtnrNif(obtnrCli())));
-		
 		cliComboBox.setEditable(true);//Establecemos el ComboBox como Editable
 		cliSelLabel.setLabelFor(cliComboBox);//Enlazamos la etiqueta de Texto al ComboBox
 		
@@ -164,10 +202,11 @@ public class Panel {
 		 * Aprietensé los machos, voy a colocar todo lo construido anteriormente en el Frame :') 
 		 */
 		GroupLayout groupLayout = new GroupLayout(getFrame().getContentPane());//Declaramos el objeto "GroupLayout" (Grupo de plantillas) rellenandolo con los datos del contenido del Frame. 
+
 		
 		
 		/*
-		 * Construimos la plantilla con todos los elementos construidos anteriormente y hubicandolo 
+		 * Construimos la plantilla con todos los elementos construidos anteriormente y ubicandolo 
 		 * en sus respectivas coordenadas (procuramos heredar añadiendo grupos secuenciales y paralelos)
 		 */
 		groupLayout.setHorizontalGroup(
@@ -245,10 +284,16 @@ public class Panel {
 		/*
 		 * Inicializamos todos los datos con valores de la base de datos.
 		 */
-		setData(cliComboBox.getSelectedItem().toString());
+		//Declaramos el modelo de datos insertando el Array resultante de "obtnrNif(cli)" y lo insertamos en el ComboBox
+		cliComboBox.setModel(new DefaultComboBoxModel<String>(obtnrNif(cli)));
+		setDataCue(cliComboBox.getSelectedItem().toString());
+
 		
 		/*
 		 * Creamos los ActionListener para escuchar los cambios realizados por parte del usuario
+		 */
+		/*
+		 * Capturar seleccion de DNI por parte del usuario
 		 */
 		cliComboBox.addActionListener(new ActionListener() {
 					
@@ -258,9 +303,126 @@ public class Panel {
 				JComboBox<String> slctn = (JComboBox<String>) event.getSource();//Recojemos el evento y lo clonamos
 				slctnDNI = (String) slctn.getSelectedItem();//Obtenemos el evento seleccionado del ComboBox
 				
-				setData(slctnDNI);//Establecemos los datos correspondientes al nuevo DNI seleccionado
+				setDataCue(slctnDNI);//Establecemos los datos correspondientes al nuevo DNI seleccionado
 			}
 		});
+		
+		/*
+		 * Capturar evento click en botón "Alta Cliente"
+		 */
+		crtCli.addActionListener(new ActionListener() {
+					
+			//Heredamos la SuperClass actionPerformed 
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				ltClnt();
+			}
+		});
+		
+		/*
+		 * Capturar evento click en botón "Alta Cuenta"
+		 */
+		crtCu.addActionListener(new ActionListener() {
+					
+			//Heredamos la SuperClass actionPerformed 
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				ltCnt();
+			}
+		});
+	}
+
+	protected void ltCnt() {
+		/*
+		 * Datos de la Cuenta
+		 */
+		JTextField iban = new JTextField(); //IBAN de la cuenta a dar de alta
+		JTextField nBanc = new JTextField(); //Nombre de la entidad bancaria
+		
+		//Declaramos el objeto con los input de la pantalla.
+		Object[] inputs = {"IBAN: ", iban,
+						   "Entidad: ", nBanc};
+		
+		//Mostramos input
+		int inpBool = JOptionPane.showConfirmDialog(null, inputs, "CashMadrid - Nuevo Cliente", JOptionPane.OK_CANCEL_OPTION);
+		
+		//Evaluamos el boton pulsado por el usuario
+		switch (inpBool) { 
+		case 0://Si pulsa en OK
+			String ibanCmplt = iban.getText();
+			
+			String dgtCn = ibanCmplt.substring(0, 4);
+			String ent = ibanCmplt.substring(4, 8);
+			String ofi = iban.getText().substring(8, 12);
+			String dgtCntrl = iban.getText().substring(12, 14);
+			String NCue = iban.getText().substring(14);
+			
+			
+//			String values = "'" + nif.getText() + "', '" + nom.getText() + "', '" + apell.getText() + "', '" + tlfn.getText() + "', '" + email.getText() + "', '" + domic.getText() + "'";
+//			nsrtrCli(values);
+//			reload();
+		}
+	}
+
+	/**
+	 * Metodo para dar de anta un cliente en la base de datos.
+	 */
+	protected void ltClnt() {
+		/*
+		 * Datos de acceso Cliente
+		 */
+		JTextField nif = new JTextField(); //DNI-NIF-NIE del cliente a dar de alta
+		JTextField nom = new JTextField(); //Nombre del cliente
+		JTextField apell = new JTextField(); //apellidos del cliente
+		JTextField tlfn = new JTextField(); //Telefono del cliente
+		JTextField email = new JTextField(); //Email del cliente
+		JTextField domic = new JTextField(); //Domicilio del cliente
+		
+		//Declaramos el objeto con los input de la pantalla.
+		Object[] inputs = {"NIF/DNI/NIE: ", nif,
+						   "Nombre: ", nom,
+						   "Apellidos: ", apell,
+						   "Telefono", tlfn,
+						   "Email", email,
+						   "Domicilio", domic};
+		
+		//Mostramos input
+		int inpBool = JOptionPane.showConfirmDialog(null, inputs, "CashMadrid - Nuevo Cliente", JOptionPane.OK_CANCEL_OPTION);
+		
+		//Evaluamos el boton pulsado por el usuario
+		switch (inpBool) { 
+		case 0://Si pulsa en OK
+			String values = "'" + nif.getText() + "', '" + nom.getText() + "', '" + apell.getText() + "', '" + tlfn.getText() + "', '" + email.getText() + "', '" + domic.getText() + "'";
+			nsrtrCli(values);
+			reload();
+		}
+	}
+
+	private void reload() {
+		/*
+		 * Inicializamos todos los datos con valores de la base de datos.
+		 */
+		crgrDts();
+		//Declaramos el modelo de datos insertando el Array resultante de "obtnrNif(obtnrCli()))" y lo insertamos en el ComboBox
+		cliComboBox.setModel(new DefaultComboBoxModel<String>(obtnrNif(cli)));
+		setDataCue(cliComboBox.getSelectedItem().toString());
+	}
+
+	private void nsrtrCli(String values) {
+		/*
+ 		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
+ 		 * Cada registro de la tabla corresponderá a un objeto. 
+ 		 */
+ 		//Establecemos los datos de la query y la modalidad de retorno
+		Query queryOBJ = new Query("DNI, Nom, Apel, Tel, Email, Dom", 
+								   "Clientes", 
+								   Statement.INSERT, 
+								   null,
+								   values,
+								   null, 
+								   conexion);
+		//ejecutamos el insert y recuperamos el resultado en un array de Objetos
+		queryOBJ.execute();
 	}
 
 	/**
@@ -295,6 +457,7 @@ public class Panel {
 								   "Clientes", 
 								   Statement.SELECT, 
 								   null, 
+								   null,
 								   Data.CLIENTES, 
 								   conexion);
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
@@ -308,36 +471,6 @@ public class Panel {
 		}
 		
 		//retornamos el array de Clientes.
-		return cli;
-	}
-	
-	/**
-	 * Función para obtener todos los datos de un unico Cliente, buscando por DNI
-	 *  
-	 * @param dni - DNI/NIF/NIE del cliente a consultar
-	 * @return Cliente - Datos del cliente solicitado
-	 */
-	private Cliente obtnrUnCli(String dni) {
-		/*
-		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
-		 * Cada registro de la tabla corresponderá a un objeto. 
-		 */
-		//Establecemos los datos de la query y la modalidad de retorno
-		Query queryOBJ = new Query("*", 
-								   "Clientes", Statement.SELECT, 
-								   "where DNI = '" + dni + "'", Data.CLIENTES, 
-								   conexion);
-		
-		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
-		Cliente cli = new Cliente();
-		try {
-			cli = (Cliente) queryOBJ.execute()[0];
-		} catch (Exception e) {
-			System.out.println("Error: " + e);
-			JOptionPane.showMessageDialog(null, "El cliente solicitado no se encuentra disponible o no existe", "CashMadrid", JOptionPane.ERROR_MESSAGE);
-		}
-		
-		//Retornamos los datos del cliente
 		return cli;
 	}
 	
@@ -357,6 +490,7 @@ public class Panel {
 									"asignacion", 
 									Statement.SELECT, 
 									"left join clientes on asignacion.IdCli = Clientes.IdCli left join cuenta on asignacion.IdCu = cuenta.idcu where DNI = '" + dni + "'",
+									null,
 									Data.CUENTA,
 									conexion);
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
@@ -370,31 +504,6 @@ public class Panel {
 		}
 		
 		//retornamos el array de Cuentas.
-		return cu;
-	}
-	
-	/**
-	 * Función para obtener todos los datos de una unica Cuenta, buscando por IBAN
-	 *  
-	 * @param iban - iban de la cuenta a ocnsultar
-	 * @return Cuenta - Datos de la Cuenta solicitada
-	 */
-	private Cuenta obtnrUnCu(String iban) {
-		/*
-		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
-		 * Cada registro de la tabla corresponderá a un objeto. 
-		 */
-		//Establecemos los datos de la query y la modalidad de retorno
-		Query queryOBJ = new Query("concat(DigCon,Ent,Ofi,DigContr,NCue) as Numero_cuenta, NBanc, FINI, FFIN", 
-								   "asignacion", 
-								   Statement.SELECT, 
-								   "left join cuenta on asignacion.IdCu = cuenta.idcu where concat(DigCon,Ent,Ofi,DigContr,NCue) = '" + iban + "'",
-								   Data.CUENTA,
-								   conexion);
-		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
-		Cuenta cu = (Cuenta) queryOBJ.execute()[0];
-		
-		//devolvemos los datos de la cuenta obtenidos.
 		return cu;
 	}
 	
@@ -447,19 +556,21 @@ public class Panel {
 	 * 
 	 * @param slctnDNI - DNI del cliente seleccionado
 	 */
-	private void setData(String slctnDNI) {
-		//Declaramos el modelo de datos insertando el Array resultante de "obtnrIBAN(obtnrCu(slctnDNI)" y lo insertamos en el ComboBox
-		cueComboBox.setModel(new DefaultComboBoxModel<String>(obtnrIBAN(obtnrCu(slctnDNI))));
+	private void setDataCue(String slctnDNI) {
+		Cuenta[] cueArr = gtCuTit(slctnDNI);
 		
 		//Obtenemos todos los datos del cliente seleccionado en el ComboBox
-		//Con "cliComboBox.getSelectedItem().toString()" Obtenemos el DNI seleccionado en el ComboBox "Clientes"
-		Cliente clie = obtnrUnCli(slctnDNI);
-				
+		Cliente clie = gtUnCli(slctnDNI);
+		
+		//Declaramos el modelo de datos insertando el Array resultante de "obtnrIBAN(obtnrCu(slctnDNI)" y lo insertamos en el ComboBox
+		cueComboBox.setModel(new DefaultComboBoxModel<String>(obtnrIBAN(cueArr)));
+						
 		//Obtenemos todos los datos de la cuenta del cliente seleccionada
 		//Con "cueComboBox.getSelectedItem().toString()" Obtenemos el IBAN seleccionado en el ComboBox "Cuentas"
 		Object slctnIBAN = cueComboBox.getSelectedItem();
+		
 		if (slctnIBAN != null) {
-			Cuenta cuen = obtnrUnCu(slctnIBAN.toString());
+			Cuenta cuen = gtUnCu(slctnIBAN.toString());
 		
 			cliData.setModel(new DefaultTableModel( // Declaramos el Modelo de datos de la tabla.
 					new Object[][] { // Declaramos objeto Array Object[][] que contendrá los registros de la tabla con los datos correspondientes.
@@ -473,7 +584,7 @@ public class Panel {
 							{ "Datos de la cuenta bancaria", "****************" }, // Cabecera que indicadora del inicio de los datos de la cuenta.
 							{ "IBAN", cuen.getIban() }, // IBAN de la cuenta.
 							{ "Entidad Bancaria", cuen.getNmbrbnc() }, // Nombre de la entidad bancaria de la cuenta.
-							{ "Saldo", null }, // Saldo de la cuenta.
+							{ "Saldo", cuen.getSaldo() }, // Saldo de la cuenta.
 							{ "Fecha Apertura", cuen.getFechaApertura() }, // Fecha de Apertura de la cuenta.
 							{ "Fecha Cierre", cuen.getFechaCierre() } // Fecha de cliente de la cuenta (Si la cuenta esta activa, obtendremos null y la celda se mostrará vacía).
 					}, new String[] { // Declaramos el objeto Array String[] que contendrá los nombres internos de las columnas (estás no se mostrarán en la ventana).
@@ -539,5 +650,38 @@ public class Panel {
 				}
 			});
 		}
+	}
+
+	private Cuenta[] gtCuTit(String DNI) {
+		int x = 0;
+		Cuenta[] ccc = new Cuenta[x];
+		for (Cuenta c: cu) {
+			if (c.getTitular().getNif().equals(DNI)) {
+				ccc = Arrays.copyOf(ccc, x + 1);
+				ccc[x] = c;
+				x++;
+			}
+		}
+		return ccc;
+	}
+	
+	private Cuenta gtUnCu(String IBAN) {
+		Cuenta ccc = null;
+		for (Cuenta c: cu) {
+			if (c.getIban().equals(IBAN)) {
+				ccc = c;
+			}
+		}
+		return ccc;
+	}
+	
+	private Cliente gtUnCli(String DNI) {
+		Cliente cl = null;
+		for (Cliente c: cli) {
+			if (c.getNif().equals(DNI)) {
+				cl = c;
+			}
+		}
+		return cl;
 	}
 }

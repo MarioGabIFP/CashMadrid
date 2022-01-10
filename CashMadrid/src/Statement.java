@@ -7,5 +7,9 @@ public enum Statement {
 	/**
 	 * Sentencia DML Select
 	 */
-	SELECT
+	SELECT,
+	/**
+	 * Senetencia Insert
+	 */
+	INSERT
 }

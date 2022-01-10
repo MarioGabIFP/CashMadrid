@@ -43,7 +43,7 @@ public class Main {
 		Object[] inputs = {"Usuario: ", userBDD, "Contraseña: ", passwordBDD};
 		
 		//Mostramos input
-		int inpBool = JOptionPane.showConfirmDialog(null, inputs, "Iniciar sesión", JOptionPane.OK_CANCEL_OPTION);
+		int inpBool = JOptionPane.showConfirmDialog(null, inputs, "CashMadrid - Iniciar sesión", JOptionPane.OK_CANCEL_OPTION);
 		
 		//Evaluamos el boton pulsado por el usuario
 		switch (inpBool) {

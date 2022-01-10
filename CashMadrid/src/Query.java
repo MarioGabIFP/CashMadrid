@@ -24,6 +24,10 @@ public class Query {
 	 */
 	private String mod;
 	/**
+	 * Valores a insertar en la Base de Datos
+	 */
+	private String valIns;
+	/**
 	 * DATO A EXTRAER
 	 */
 	private Data dat;
@@ -62,11 +66,12 @@ public class Query {
 	 * @param tab - Tabla/s sobre la que se realizará la query solicitada.
 	 * @param type - Tipo de query solicitada.
 	 */
-	public Query(String cols, String tab, Statement type, String mod, Data dat, Conexion conexion) {
+	public Query(String cols, String tab, Statement type, String mod, String valIns, Data dat, Conexion conexion) {
 		this.cols = cols;//Recojemos las columnas solicitadas
 		this.tab = tab.toUpperCase();//Recojemos la tabla solicitada
 		this.type = type;//Recogemos el tipo de Query Solicitada
 		this.mod = mod;//recogemos los modificadores especificados en la query.
+		this.valIns = valIns;//recogemos los valores a insertar
 		this.dat = dat;//Recogemos el tipo de dato que queremos extraer
 		this.conexion = conexion;//cargamos la conexion con la base de datos.
 	}
@@ -77,6 +82,9 @@ public class Query {
 	 * @return Object[] - Array de objetos, retornará el Resultado de la Query realizada
 	 */
 	public Object[] execute() {
+		//Declaramos la query a construir
+		String query;
+		
 		//Conectamos con la base de datos
 		conexion.conect();
 		
@@ -86,7 +94,6 @@ public class Query {
 			//Reinicializamos resultado
 			resul = new Object[0];
 			//Construimos la query tal y como se ha solicitado
-			String query;
 			if(mod != null) {
 				query = this.type + " " + this.cols + " FROM " + this.tab + " " + this.mod + ";";
 			} else {
@@ -179,27 +186,6 @@ public class Query {
 										//extraemos el valor en el campo 'Nmbrbnc' del objeto Cliente
 										cu.setNmbrbnc(result.getString(resultmtdt.getColumnName(p)));
 										break;
-									case "DNI"://Si la columna es 'DNI'
-										/*
-										 * Extraemos el Cliente correspondiente al DNI del campo 'DNI' del objeto Cuenta
-										 * dentro del Objeto Cliente.
-										 */
-										/*
-								 		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
-								 		 * Cada registro de la tabla corresponderá a un objeto. 
-								 		 */
-								 		//Establecemos los datos de la query y la modalidad de retorno
-										Query queryOBJ = new Query("*", 
-																   "CLIENTES", 
-																   Statement.SELECT, 
-																   "WHERE DNI = '" + result.getString(resultmtdt.getColumnName(p)) + "'", 
-																   Data.CLIENTES, 
-																   conexion);
-										//ejecutamos la query y recuperamos el resultado en un array de Objetos
-										Cliente clnt = (Cliente) queryOBJ.execute()[0];
-										//Establecemos el titular de la cuenta
-										cu.setTitular(clnt);
-										break;
 									case "FINI"://Si la columna es 'TEL'
 										//extraemos el valor en el campo 'Tlfn' del objeto Cliente
 										cu.setFechaApertura(result.getDate(resultmtdt.getColumnName(p)));
@@ -237,6 +223,25 @@ public class Query {
 			//Retornamos el resultado de la Query en formato Object
 			return resul;
 			
+		case INSERT://En el caso de haber solicitado un Insert
+			//Reinicializamos resultado
+			resul = new Object[0];
+			//Construimos la query tal y como se ha solicitado
+			if(mod != null) {
+				query = this.type + " INTO "  + this.tab + "(" + this.cols + ")" + " VALUES (" + valIns + ")" + this.mod + ";";
+			} else {
+				query = this.type + " INTO "  + this.tab + "(" + this.cols + ")" + " VALUES (" + valIns + ");";
+			}
+			
+			try {
+				//Preparamos y ejecutamos la query construida
+				prep(query);
+			} catch (NullPointerException i) {
+				//Si se sucede un error durante la ejecución
+				System.out.println("Error: No hay una conexion establecida a la base de datos");
+			}
+			
+			return null;
 		default://En el caso de que no exista la opcion
 			throw new IllegalArgumentException("Valor inesperado: " + this.type);//Generamos Excepcion
 		}
@@ -251,8 +256,12 @@ public class Query {
 		try {
 			//Preparamos la query
 			statment = conexion.getConexion().prepareStatement(query);
-			//Ejecutamos al query
-			result = statment.executeQuery();
+			//Ejecutamos la query
+			try {
+				result = statment.executeQuery();
+			} catch (SQLException e) {
+				statment.execute();
+			}
 			//Obtenemos los metadatos de la query ejecutada
 			resultmtdt = result.getMetaData();
 		} catch (SQLException e) {//Si sucede error en la base de datos
