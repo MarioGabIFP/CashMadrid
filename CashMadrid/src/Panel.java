@@ -424,6 +424,23 @@ public class Panel {
 		//ejecutamos el insert y recuperamos el resultado en un array de Objetos
 		queryOBJ.execute();
 	}
+	
+	private void nsrtrCu(String values) {
+		/*
+ 		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
+ 		 * Cada registro de la tabla corresponderá a un objeto. 
+ 		 */
+ 		//Establecemos los datos de la query y la modalidad de retorno
+		Query queryOBJ = new Query("DNI, Nom, Apel, Tel, Email, Dom", 
+								   "Clientes", 
+								   Statement.INSERT, 
+								   null,
+								   values,
+								   null, 
+								   conexion);
+		//ejecutamos el insert y recuperamos el resultado en un array de Objetos
+		queryOBJ.execute();
+	}
 
 	/**
 	 * Metodo para obtener el JFrame del Frame activo
