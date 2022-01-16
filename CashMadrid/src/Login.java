@@ -1,8 +1,4 @@
 /**
- * 
- */
-
-/**
  * Clase que representa un Objeto login, que correspondera al inicio de sesión del usuario
  * en la base de datos
  * 

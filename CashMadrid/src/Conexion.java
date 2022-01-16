@@ -1,9 +1,8 @@
 import java.sql.*;
-
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 /**
- * Clase para conectar a la base de datos; esta clase es la que se encargará de realizar al conexión a la base de datos.
+ * Clase para conectar a la base de datos; esta clase es la que se encargará de realizar la conexión a la base de datos.
  * 
  * @author Mario Gabriel Núñez Alcázar de Velasco
  */
@@ -77,11 +76,11 @@ public class Conexion {
 	}
 	
 	/**
-	 * Metodo para recibir el HashCode de la conexion establecida.
-	 * @return conexion - Connection (HashCode).
+	 * Metodo para recibir el Objeto de la conexion establecida.
+	 * @return conexion - Connection.
 	 */
 	public Connection getConexion(){
-		return conexion; // devolvemos el HashCode de conexion
+		return conexion; // devolvemos el Objeto conexion
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 /**
- * Enumeracion para establecer las tablas de la base de datos disponibles para este programa.
+ * Enumeracion para establecer los Datos de la base de datos que extraeremos en este programa.
  * 
  * @author Mario Gabriel Núñez Alcázar de Velasco
  */

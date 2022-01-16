@@ -1,31 +1,35 @@
 import java.util.*;
 
 /**
- * 
- */
-
-/**
- * Objeto que representa la cuenta de un cliente
+ * Objeto que representa los datos de una Transferencia Existente en la Base de Datos
  * 
  * @author Mario Gabriel Núñez Alcázar de Velasco
  */
 public class Transferencia {
 	/**
-	 * Cuenta Origen de la transferencia
+	 * Referencia de la transferencia.
 	 */
-	private Cuenta origen;
+	private int ref;
 	/**
-	 * Cuenta Destino de la transferencia
+	 * Cuenta Origen de la transferencia.
 	 */
-	private Cuenta destino;
+	private int origen;
 	/**
-	 * Fecha de l atransferencia
+	 * Cuenta Destino de la transferencia.
+	 */
+	private int destino;
+	/**
+	 * Fecha de la transferencia.
 	 */
 	private Date fTransf;
 	/**
 	 * Importe de la transferencia.
 	 */
-	private double imp;
+	private Double imp;
+	/**
+	 * Concepto de la transferencia.
+	 */
+	private String cncpt;
 	
 	/**
 	 * Constructor vacío
@@ -33,27 +37,98 @@ public class Transferencia {
 	public Transferencia() {}
 
 	/**
-	 * Constructor con datos
-	 * 
-	 * @param origen - Cuenta Origen de la transferencia
-	 * @param destino - Cuenta destino de la transferencia
-	 * @param fTransf - Fecha de la transferencia
-	 * @param imp - Importe de la transferencia
+	 * Método Get para obtener el Número interno de la cuenta Origen de la transferencia.
+	 * @return Origen - Número interno de la cuenta Origen
 	 */
-	public Transferencia(Cuenta origen, Cuenta destino, Date fTransf, double imp) {
-		this.origen = origen; //obtenemos la cuenta origen de la transferencia
-		this.destino = destino; //obtenemos la cuenta destino de la transferencia
-		this.fTransf = fTransf;//obtenemos la Fecha de la transferencia
-		this.imp = imp;//obtenemos el Importe de la transferencia
+	public int getOrigen() {
+		return origen;
 	}
 
 	/**
-	 * Clase para mostrar en consola los diferentes objetos creados con esta clase.
-	 * @return String - datos del objeto.
+	 * Método Get para obtener el Número interno de la cuenta Destino de la transferencia.
+	 * @return Destino - Número interno de la cuenta Destino
 	 */
-	@Override
-	public String toString() {
-		return "Transferencia [origen=" + origen + ", \n\t\t\t\t\t\tdestino=" + destino + ", \n\t\t\t\t\t\tfTransf="
-				+ fTransf + ", \n\t\t\t\t\t\timp=" + imp + "]";
+	public int getDestino() {
+		return destino;
+	}
+
+	/**
+	 * Método Get para obtener la Fecha de la transferencia.
+	 * @return fTransf - Fecha de la transferencia.
+	 */
+	public Date getfTransf() {
+		return fTransf;
+	}
+
+	/**
+	 * Método Get para obtener el Importe de la transferencia.
+	 * @return imp - Importe de la transferencia.
+	 */
+	public Double getImp() {
+		return imp;
+	}
+
+	/**
+	 * Método Get para obtener el Concepto de la transferencia.
+	 * @return cncpt - Concepto de la transferencia.
+	 */
+	public String getCncpt() {
+		return cncpt;
+	}
+
+	/**
+	 * Método Set para establecer el Número interno de la cuenta Origen de la transferencia.
+	 * @param origen - Número interno de la cuenta Origen de la transferencia.
+	 */
+	public void setOrigen(int origen) {
+		this.origen = origen;
+	}
+
+	/**
+	 * Método Set para establecer el Número interno de la cuenta Destino de la transferencia.
+	 * @param destino - Número interno de la cuenta Destino de la transferencia.
+	 */
+	public void setDestino(int destino) {
+		this.destino = destino;
+	}
+
+	/**
+	 * Método Set para establecer la Fecha de la transferencia.
+	 * @param fTransf - la Fecha de la transferencia.
+	 */
+	public void setfTransf(Date fTransf) {
+		this.fTransf = fTransf;
+	}
+
+	/**
+	 * Método Set para establecer el Importe de la transferencia.
+	 * @param imp - el Importe de la transferencia.
+	 */
+	public void setImp(Double imp) {
+		this.imp = imp;
+	}
+
+	/**
+	 * Método Set para establecer el Concepto de la transferencia.
+	 * @param cncpt - Concepto de la transferencia.
+	 */
+	public void setCncpt(String cncpt) {
+		this.cncpt = cncpt;
+	}
+
+	/**
+	 * Método Get para obtener la Referencia de la transferencia.
+	 * @return ref - Referencia de la transferencia.
+	 */
+	public int getRef() {
+		return ref;
+	}
+
+	/**
+	 * Método Set para establecer la Referencia de la transferencia.
+	 * @param ref - la Referencia de la transferencia.
+	 */
+	public void setRef(int ref) {
+		this.ref = ref;
 	}
 }

@@ -2,11 +2,31 @@ import java.awt.EventQueue;
 import javax.swing.*;
 
 /**
+ * Cash Madrid.:
  * 
- */
-
-/**
- * Clase principal del programa, esta es la primera que se ejecutará
+ * Programa desarrollado para la realización del primer trabajo de Programacion en el 2º Trimestre
+ * del 1º Curso de Desarrollo de aplicaciones Multiplataforma.
+ * <br><br>
+ * Visión: la aplicacion se ha desarrollado entendiendo que se destina a una entidad bancaria o a una empresa
+ * Gestora de activos; así que, lo desarrollado desde la vision del currito que esta en la ventanilla y que 
+ * gestiona las peticiones de los clientes, de ahí el desarollo de la interfaz y del funcionamiento interno, asi como 
+ * la estructura de la base de datos.
+ * <br><br>
+ * Cosas a tener en cuenta:
+ * 	- La aplicación aún hay que optimizarla un poco mas, no he podido optimizarlo más dado las fechas de entrega
+ *  - Me Huebra gustado añadir mas elementos de interaccion con el usuario, pero al ser algo añadido de más a la
+ *    aplicación, me he centrado en terminar lo basico y luego he añadido más cosas por mi cuenta y riesgo
+ *    
+ * P.D.: por mi cuenta seguiré trabajando en la aplicación para perfeccionarla, dando prieoridad a las entregas
+ * activas eso sí.
+ * 
+ * Ubicacion del Enunciado: .\CashMadrid\doc\Practica Banco v2.pdf
+ * Ubicación del JavaDoc: .\CashMadrid\doc\JavaDoc
+ * Ubicacion de la definicion de la base de datos (SQL): .\CashMadrid\doc\SQL\cdb.sql
+ * Ubicacion del Ejecutable en .jar: .\CashMadrid\BIN\CashMadrid.jar
+ * 
+ * Nota: en la misma definición de la base de datos se generan unos datos por defecto para poder 
+ * usar la aplicacion con datos.
  * 
  * @author Mario Gabriel Núñez Alcázar de Velasco
  */
@@ -24,7 +44,7 @@ public class Main {
 	/**
 	 * Funcion principal el programa
 	 * 
-	 * @param args
+	 * @param args - Argumentos del Main
 	 */
 	public static void main(String[] args) {
 		/*
@@ -86,7 +106,7 @@ public class Main {
 	}
 	
 	/**
-	 * Método que comprueba si los datoas de la conexion son correctos o no 
+	 * Método que comprueba si los datos de la conexion son correctos o no 
 	 * (simplemente probando que la conexion se realiza con normalidad).
 	 * 
 	 * @return Boolean - True/False:<br> True: Conexion realizada correctamente <br>False: Error en la conexion

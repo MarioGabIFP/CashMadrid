@@ -6,6 +6,11 @@
 public class Cliente {
 	
 	/**
+	 * Numero interno de Identificacion
+	 */
+	private int idCli;
+	
+	/**
 	 * Numero de Identificacion Fiscal del cliente.
 	 */
 	private String nif;
@@ -36,38 +41,14 @@ public class Cliente {
 	private String dmcl;
 	
 	/**
+	 * Estado del cliente; True - Cliente activo, False - Cliente dado de baja
+	 */
+	private Boolean stts;
+	
+	/**
 	 * Constructor vacío, para llamar a la clase Cliente sin datos.
 	 */
 	public Cliente() {}
-
-	/**
-	 * Constructor con datos para crear objetos Cliente.
-	 * 
-	 * @param nif - Numero de Identificacion Fiscal del cliente.
-	 * @param nmbr - Nombre del cliente.
-	 * @param apllds - Apellidos del cliente.
-	 * @param tlfn - Telefono del cliente.
-	 * @param eml - Email del cliente.
-	 * @param dmcl - Domicilio del cliente.
-	 */
-	public Cliente(String nif, String nmbr, String apllds, String tlfn, String eml, String dmcl) {
-		this.nif = nif; //Establecemos el NIF cel cliente
-		this.nmbr = nmbr; //Establecemos el Nombre del cliente
-		this.apllds = apllds; //Establecemos los apellidos del cliente
-		this.tlfn = tlfn; //Establecemos el Telefono del cliente
-		this.eml = eml; //Establecemos el Email del cliente 
-		this.dmcl = dmcl; //Establecemos el Domicilio del cliente
-	}
-	
-	/**
-	 * Clase para mostrar en consola los diferentes objetos creados con esta clase.
-	 * @return String - datos del objeto.
-	 */
-	@Override
-	public String toString() {
-		return "Cliente [nif=" + nif + ", \n\t nmbr=" + nmbr + ", \n\t apllds=" + apllds
-				+ ", \n\t tlfn=" + tlfn + ", \n\t eml=" + eml + ", \n\t dmcl=" + dmcl + "]\n";
-	}
 
 	/**
 	 * Método Get para obtener el Numero de Identificacion Fiscal del cliente en el objeto.
@@ -163,5 +144,37 @@ public class Cliente {
 	 */
 	public void setDmcl(String dmcl) {
 		this.dmcl = dmcl;
+	}
+
+	/**
+	 * Método Get para obtener el Identificador interno del cliente en el objeto.
+	 * @return idCli - Identificador interno del cliente.
+	 */
+	public int getIdCli() {
+		return idCli;
+	}
+
+	/**
+	 * Método Set para establecer el Identificador interno del cliente en el objeto.
+	 * @param idCli - Identificador interno del cliente.
+	 */
+	public void setIdCli(int idCli) {
+		this.idCli = idCli;
+	}
+
+	/**
+	 * Método Get para obtener el Estado del cliente en el objeto.
+	 * @return stts - Estado del cliente.
+	 */
+	public Boolean getStts() {
+		return stts;
+	}
+
+	/**
+	 * Método Set para establecer el Estado interno del cliente en el objeto.
+	 * @param stts - Estado del cliente.
+	 */
+	public void setStts(Boolean stts) {
+		this.stts = stts;
 	}
 }

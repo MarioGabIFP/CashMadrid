@@ -28,24 +28,31 @@ public class Query {
 	 */
 	private String valIns;
 	/**
-	 * DATO A EXTRAER
+	 * Dato a Extraer
 	 */
 	private Data dat;
+	/**
+	 * Cantidad de querys a concatenar
+	 */
+	private Integer cant;
 	
 	/**
 	 * Resultado de la Query realizada.
 	 * Contendrá los registros obtenidos tras la query, por defecto se establece a [null].
 	 */
 	public static ResultSet result = null;
+	
 	/**
 	 * Metadata del resultado de la Query realizada.
 	 * Por defecto se establece a [null].
 	 */
 	public static ResultSetMetaData resultmtdt = null;
+	
 	/**
 	 * Declaramos el Array de Objetos en el que almacenaremos el resultado de la query
 	 */
 	public static Object[] resul = new Object[0];//por defecto lo declaramos con tamaño '0'
+	
 	/**
 	 * Declaramos el Objeto PreparedStatment que se encargará de mandar la query al motor BDD para ejecutarlo
 	 */
@@ -65,8 +72,13 @@ public class Query {
 	 * @param cols - Columna/s sobre las que se realizará la query solicitada.
 	 * @param tab - Tabla/s sobre la que se realizará la query solicitada.
 	 * @param type - Tipo de query solicitada.
+	 * @param mod - Modificadores de la Query
+	 * @param valIns - Valores a insertar (en el caso de un Insert)
+	 * @param dat - tipo de dato a extraer (En el caso del Select)
+	 * @param conexion - Conexion a la base de datos.
+	 * @param cant - Cantidad de querys a realizar (Para los Update y los Insert en varias tablas al mismo tiempo)
 	 */
-	public Query(String cols, String tab, Statement type, String mod, String valIns, Data dat, Conexion conexion) {
+	public Query(String cols, String tab, Statement type, String mod, String valIns, Data dat, Conexion conexion, Integer cant) {
 		this.cols = cols;//Recojemos las columnas solicitadas
 		this.tab = tab.toUpperCase();//Recojemos la tabla solicitada
 		this.type = type;//Recogemos el tipo de Query Solicitada
@@ -74,16 +86,17 @@ public class Query {
 		this.valIns = valIns;//recogemos los valores a insertar
 		this.dat = dat;//Recogemos el tipo de dato que queremos extraer
 		this.conexion = conexion;//cargamos la conexion con la base de datos.
+		this.cant = cant;//cargamos la cantidad de querys a concatenar.
 	}
 	
 	/**
 	 * Metodo que se encargará de ejecutar la query solicitada y devolver los datos
 	 * 
-	 * @return Object[] - Array de objetos, retornará el Resultado de la Query realizada
+	 * @return Object[] - Array de objetos, retornará el Resultado de la Query realizada (Solo se usará en el caso de los Select, ya que los Update, Insert y Delete no devuelven nada)
 	 */
 	public Object[] execute() {
 		//Declaramos la query a construir
-		String query;
+		String query = null;
 		
 		//Conectamos con la base de datos
 		conexion.conect();
@@ -94,9 +107,11 @@ public class Query {
 			//Reinicializamos resultado
 			resul = new Object[0];
 			//Construimos la query tal y como se ha solicitado
-			if(mod != null) {
+			if(mod != null) {//si el modificador no es nulo
+				//montamos la query con los modificadores
 				query = this.type + " " + this.cols + " FROM " + this.tab + " " + this.mod + ";";
-			} else {
+			} else {//sino
+				//montamos la query sin los modificadores
 				query = this.type + " " + this.cols + " FROM " + this.tab + ";";
 			}
 			
@@ -125,31 +140,40 @@ public class Query {
 							 * correespondientes para rellenar el objeto
 							 */
 							for (int p = 1;p <= resultmtdt.getColumnCount();p++) {
+								String col = resultmtdt.getColumnName(p);
 								//Evaluamos el nombre de la columna actual
-								switch (resultmtdt.getColumnName(p).toUpperCase()) {
+								switch (col.toUpperCase()) {
+									case "IDCLI"://Si la columna es 'idCli'
+										//extraemos el valor en el campo 'idCli' del objeto Cliente
+										cli.setIdCli(result.getInt(col));
+										break;
 									case "DNI"://Si la columna es 'DNI'
 										//extraemos el valor en el campo 'Nif' del objeto Cliente
-										cli.setNif(result.getString(resultmtdt.getColumnName(p)));
+										cli.setNif(result.getString(col));
 										break;
 									case "NOM"://Si la columna es 'NOM'
 										//extraemos el valor en el campo 'Nmbr' del objeto Cliente
-										cli.setNmbr(result.getString(resultmtdt.getColumnName(p)));
+										cli.setNmbr(result.getString(col));
 										break;
 									case "APEL"://Si la columna es 'APEL'
 										//extraemos el valor en el campo 'Apllds' del objeto Cliente
-										cli.setApllds(result.getString(resultmtdt.getColumnName(p)));
+										cli.setApllds(result.getString(col));
 										break;
 									case "TEL"://Si la columna es 'TEL'
 										//extraemos el valor en el campo 'Tlfn' del objeto Cliente
-										cli.setTlfn(result.getString(resultmtdt.getColumnName(p)));
+										cli.setTlfn(result.getString(col));
 										break;
 									case "EMAIL"://Si la columna es 'EMAIL'
 										//extraemos el valor en el campo 'Eml' del objeto Cliente
-										cli.setEml(result.getString(resultmtdt.getColumnName(p)));
+										cli.setEml(result.getString(col));
 										break;
 									case "DOM"://Si la columna es 'DOM'
 										//extraemos el valor en el campo 'Dmcl' del objeto Cliente
-										cli.setDmcl(result.getString(resultmtdt.getColumnName(p)));
+										cli.setDmcl(result.getString(col));
+										break;
+									case "ACTIV"://Si la columna es 'DOM'
+										//extraemos el valor en el campo 'Dmcl' del objeto Cliente
+										cli.setStts(result.getBoolean(col));
 										break;
 								}
 							}
@@ -163,7 +187,7 @@ public class Query {
 						}
 						
 						break;
-					case CUENTA:
+					case CUENTA://si es la tabla cuenta
 						/**
 						 * Bucle while por el que recorremos los registros obtenidos
 						 */
@@ -176,37 +200,92 @@ public class Query {
 							 * correespondientes para rellenar el objeto
 							 */
 							for (int p = 1;p <= resultmtdt.getColumnCount();p++) {
+								String col = resultmtdt.getColumnName(p);
 								//Evaluamos el nombre de la columna actual
-								switch (resultmtdt.getColumnName(p).toUpperCase()) {
+								switch (col.toUpperCase()) {
+									case "IDCU"://Si la columna es 'idCu'
+										//extraemos el valor en el campo 'idCu' del objeto Cuenta
+										cu.setIdCu((result.getInt(col)));
+										break;
 									case "NUMERO_CUENTA"://Si la columna es 'Numero_cuenta'
 										//extraemos el valor en el campo 'IBAN' del objeto Cuenta
-										cu.setIban(result.getString(resultmtdt.getColumnName(p)));
+										cu.setIban(result.getString(col));
 										break;
 									case "NBANC"://Si la columna es 'NBanc'
-										//extraemos el valor en el campo 'Nmbrbnc' del objeto Cliente
-										cu.setNmbrbnc(result.getString(resultmtdt.getColumnName(p)));
+										//extraemos el valor en el campo 'Nmbrbnc' del objeto Cuenta
+										cu.setNmbrbnc(result.getString(col));
 										break;
-									case "FINI"://Si la columna es 'TEL'
-										//extraemos el valor en el campo 'Tlfn' del objeto Cliente
-										cu.setFechaApertura(result.getDate(resultmtdt.getColumnName(p)));
+									case "FINI"://Si la columna es 'FINI'
+										//extraemos el valor en el campo 'FINI' del objeto Cuenta
+										cu.setFechaApertura(result.getDate(col));
 										break;
-									case "FFIN"://Si la columna es 'EMAIL'
-										//extraemos el valor en el campo 'Eml' del objeto Cliente
-										cu.setFechaCierre(result.getDate(resultmtdt.getColumnName(p)));
+									case "FFIN"://Si la columna es 'FFIN'
+										//extraemos el valor en el campo 'FFIN' del objeto Cuenta
+										cu.setFechaCierre(result.getDate(col));
 										break;
 								}
 							}
 							
 							//Aumentamos el tamaño del Array que contendra los registros Extraidos en formato Object
 							resul = Arrays.copyOf(resul, i + 1);
-							//Insertamos el Objeto Cliente con los datos extraidos del registro actual
+							//Insertamos el Objeto Cuenta con los datos extraidos del registro actual
 							resul[i] = cu;
 							//Aumentamos el contador de registro en '1'
 							i++;
 						}
 						
 						break;
-					case TRANSFERENCIAS:
+					case TRANSFERENCIAS://en el caso de las transferencias
+						/**
+						 * Bucle while por el que recorremos los registros obtenidos
+						 */
+						while(result.next() == true) {//Si hay datos en el registro siguiente 
+							//Declaramos un objeto de tipo Transferencia.
+							Transferencia trnsfrnc = new Transferencia();
+							
+							/*
+							 * Recorremos las columnas del registro actual en busca de los datos 
+							 * correespondientes para rellenar el objeto
+							 */
+							for (int p = 1;p <= resultmtdt.getColumnCount();p++) {
+								String col = resultmtdt.getColumnName(p);
+								//Evaluamos el nombre de la columna actual
+								switch (col.toUpperCase()) {
+									case "CODTRAN"://Si la columna es 'CODTRAN'
+										//extraemos el valor en el campo 'CODTRAN' del objeto Transferencia
+										trnsfrnc.setRef(result.getInt(col));
+										break;
+									case "CORI"://Si la columna es 'CORI'
+										//extraemos el valor en el campo 'CORI' del objeto Transferencia
+										trnsfrnc.setOrigen(result.getInt(col));
+										break;
+									case "CDES"://Si la columna es 'CDES'
+										//extraemos el valor en el campo 'CDES' del objeto Transferencia
+										trnsfrnc.setDestino(result.getInt(col));
+										break;
+									case "FTRAN"://Si la columna es 'FTRAN'
+										//extraemos el valor en el campo 'FTRAN' del objeto Transferencia
+										trnsfrnc.setfTransf(result.getDate(col));
+										break;
+									case "IMP"://Si la columna es 'IMP'
+										//extraemos el valor en el campo 'IMP' del objeto Transferencia
+										trnsfrnc.setImp(result.getDouble(col));
+										break;
+									case "CNCPT"://Si la columna es 'CNCPT'
+										//extraemos el valor en el campo 'CNCPT' del objeto Transferencia
+										trnsfrnc.setCncpt(result.getString(col));
+										break;
+								}
+							}
+							
+							//Aumentamos el tamaño del Array que contendra los registros Extraidos en formato Object
+							resul = Arrays.copyOf(resul, i + 1);
+							//Insertamos el Objeto Transferencia con los datos extraidos del registro actual
+							resul[i] = trnsfrnc;
+							//Aumentamos el contador de registro en '1'
+							i++;
+						}
+						
 						break;
 					}
 				} catch (SQLException e) {//en el caso de error
@@ -224,43 +303,111 @@ public class Query {
 			return resul;
 			
 		case INSERT://En el caso de haber solicitado un Insert
-			//Reinicializamos resultado
-			resul = new Object[0];
-			//Construimos la query tal y como se ha solicitado
-			if(mod != null) {
-				query = this.type + " INTO "  + this.tab + "(" + this.cols + ")" + " VALUES (" + valIns + ")" + this.mod + ";";
-			} else {
-				query = this.type + " INTO "  + this.tab + "(" + this.cols + ")" + " VALUES (" + valIns + ");";
+			/*
+			 * Construimos la query tal y como se ha solicitado
+			 */
+			/*
+			 * si se han solicitado mas de dos inserts, los valores vendran separados por ';'
+			 */
+			String[] valIns = this.valIns.split(";");//Separamos los grupos de valores a insertar
+			String[] tab = this.tab.split(";");//Separamos los grupos de tablas a insertar
+			String[] cols = this.cols.split(";");//Separamos los grupos de Columnas a insertar
+			
+			for (int i = 0;i < this.cant;i++) {//para cada Query solicitada
+				if(mod != null) {//si el modificador no es nulo
+					//Montamos con el modificador
+					query = this.type + " INTO "  + tab[i] + "(" + cols[i] + ")" + " VALUES (" + valIns[i] + ")" + this.mod + ";";
+				} else {//sino
+					//Montamos sin el modificador
+					query = this.type + " INTO "  + tab[i] + "(" + cols[i] + ")" + " VALUES (" + valIns[i] + ");";
+				}
+			
+				try {
+					//Preparamos y ejecutamos la query construida
+					prep(query);
+				} catch (NullPointerException f) {
+					//Si se sucede un error durante la ejecución
+					System.out.println("Error: No hay una conexion establecida a la base de datos");
+				}
 			}
+			
+			//Desconectamos de la base de datos
+			conexion.desconexion();
+			
+			return null;//los Update no recuperan ninguún valor por lo que devolvemos nulo.
+		
+		case UPDATE://En el caso de haber solicitado un Update
+			/*
+			 * Construimos la query tal y como se ha solicitado
+			 */
+			/*
+			 * si se han solicitado mas de dos inserts, los valores vendran separados por ';'
+			 */
+			String[] valUpdt = this.valIns.split(";");//Separamos los grupos de valores a insertar
+			String[] tabs = this.tab.split(";");//Separamos los grupos de tablas a insertar
+			String[] colms = this.cols.split(";");//Separamos los grupos de Columnas a insertar
+			String[] cond = this.mod.split(";");//Separamos los grupos de Columnas a insertar
+			
+			for (int i = 0;i < this.cant;i++) {//para cada Query solicitada
+				if(mod != null) {//si el modificador no es nulo
+					//Montamos con el modificador
+					query = this.type + " " + tabs[i] + " SET " + colms[i]  + " = '" + valUpdt[i] + "'" + cond[i] + ";";
+				} else {//si no
+					//Montamos sin el modificador
+					query = this.type + " " + tabs[i] + " SET " + colms[i]  + " = '" + valUpdt[i] + "'" + cond[i] + ";";
+				}
+				
+				try {
+					//Preparamos y ejecutamos la query construida
+					prep(query);
+				} catch (NullPointerException f) {
+					//Si se sucede un error durante la ejecución
+					System.out.println("Error: No hay una conexion establecida a la base de datos");
+				}
+			}
+			
+			//Desconectamos de la base de datos
+			conexion.desconexion();
+			
+			return null;//como los Update no devuelven ningún Dato, retornamos null
+		
+		case DELETE://En el caso de haber solicitado un Delete
+			//montamos la query con los datos facilitados
+			query = this.type + " FROM " + this.tab + " " + this.mod + ";";//
 			
 			try {
 				//Preparamos y ejecutamos la query construida
 				prep(query);
-			} catch (NullPointerException i) {
+			} catch (NullPointerException f) {
 				//Si se sucede un error durante la ejecución
 				System.out.println("Error: No hay una conexion establecida a la base de datos");
 			}
 			
+			return null;//como los Delete no devuelven ningún Dato, retornamos null
+		default://En el caso de que no exista la opcion, retornamos null
 			return null;
-		default://En el caso de que no exista la opcion
-			throw new IllegalArgumentException("Valor inesperado: " + this.type);//Generamos Excepcion
 		}
 	}
 	
 	/**
 	 * Metodo que prepara y ejecuta la Query.
 	 * 
-	 * @return Object - Retornamos el resultado de la query en formato Objeto.
+	 * @param query - Query a ejecutar.
 	 */
 	private void prep(String query) {
 		try {
-			//Preparamos la query
+			/*
+			 * Preparamos la query
+			 */
 			statment = conexion.getConexion().prepareStatement(query);
-			//Ejecutamos la query
+			
+			/*
+			 * Ejecutamos la query
+			 */
 			try {
-				result = statment.executeQuery();
-			} catch (SQLException e) {
-				statment.execute();
+				result = statment.executeQuery();//ejecutamos y recogemos los datos.
+			} catch (SQLException e) {//si se sucede alguna excepción a la hora de recoger Datos
+				statment.execute();//ejecutamos sin rellenar el result (Para Insert, Delete y Update)
 			}
 			//Obtenemos los metadatos de la query ejecutada
 			resultmtdt = result.getMetaData();

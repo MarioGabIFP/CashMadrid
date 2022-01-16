@@ -21,6 +21,11 @@ public class Cuenta {
 	private String iban;
 	
 	/**
+	 * Número de identificación interno de la cuenta
+	 */
+	private int idCu;
+	
+	/**
 	 * Nombre del Banco.
 	 */
 	private String nmbrbnc;
@@ -51,51 +56,6 @@ public class Cuenta {
 	 * Constructor sin datos, para llamar a la clase Cuenta sin datos.
 	 */
 	public Cuenta(){}
-	
-	/**
-	 * Constructor con datos para crear objetos Cuenta que representarán una nueva cuenta bancaría.
-	 * 
-	 * @param iban - Codigo IBAN de la cuenta.
-	 * @param nmbrbnc - Nombre de la entidad bancaria.
-	 * @param titular - titular de la cuenta; Objeto tipo Cliente.
-	 * @param saldo - Saldo de la cuenta bancaria.
-	 */
-	public Cuenta(String iban, String nmbrbnc, Cliente titular, double saldo) {
-		this.iban = iban; //Obtenemos el IBAN de la cuenta
-		this.nmbrbnc = nmbrbnc; //Obtenemos el nombre de la entidad bancaria
-		this.titular = titular; //Obtenemos el titular de la cuenta
-		this.saldo = saldo; //Obtenemos el saldo de la cuenta
-		this.fechaApertura = new Date(); //Obtenemos la fecha de hoy como fecha de apertura de la cuenta
-	}
-	
-	/**
-	 * Constructor con datos para descargar datos de objetos Cuenta situados en la Base de Datos.
-	 * 
-	 * @param iban - Codigo IBAN de la cuenta.
-	 * @param nmbrbnc - Nombre de la entidad bancaria.
-	 * @param titular - titular de la cuenta; Objeto tipo Cliente.
-	 * @param saldo - Saldo de la cuenta bancaria.
-	 * @param fechaApertura - Fecha de apertura de la cuenta bancaría
-	 * @param fechaCierre - Fecha de cancelacion/cierre de la cuenta bancaria.
-	 */
-	public Cuenta(String iban, String nmbrbnc, Cliente titular, double saldo, Date fechaApertura, Date fechaCierre) {
-		this.iban = iban; //Obtenemos el IBAN de la cuenta
-		this.nmbrbnc = nmbrbnc; //Obtenemos el nombre de la entidad bancaria
-		this.titular = titular; //Obtenemos el titular de la cuenta
-		this.saldo = saldo; //Obtenemos el saldo de la cuenta
-		this.fechaApertura = fechaApertura; //Obtenemos la fecha de apertura de la cuenta
-		this.fechaCierre = fechaCierre; //Obtenemos la fecha de apertura de la cuenta
-	}
-
-	/**
-	 * Clase para mostrar en consola los diferentes objetos creados con esta clase.
-	 * @return String - datos del objeto.
-	 */
-	@Override
-	public String toString() {
-		return "Cuenta [iban=" + iban + ", \n\t nmbrbnc=" + nmbrbnc + ", \n\t titular=" + titular + ", \n\t saldo="
-				+ saldo + ", \n\t fechaApertura=" + fechaApertura + ", \n\t fechaCierre=" + fechaCierre + "]\n";
-	}
 
 	/**
 	 * Método Get para obtener el IBAN de la cuenta en el objeto.
@@ -191,5 +151,21 @@ public class Cuenta {
 	 */
 	public void setFechaCierre(Date fechaCierre) {
 		this.fechaCierre = fechaCierre;
+	}
+
+	/**
+	 * Método Get para obtener el Número de identificación interno de la cuenta en el objeto.
+	 * @return idCu - Número de identificación interno de la cuenta.
+	 */
+	public int getIdCu() {
+		return idCu;
+	}
+	
+	/**
+	 * Método Set para establecer el Número de identificación interno de la cuenta en el objeto.
+	 * @param idCu - Número de identificación interno de la cuenta.
+	 */
+	public void setIdCu(int idCu) {
+		this.idCu = idCu;
 	}
 }

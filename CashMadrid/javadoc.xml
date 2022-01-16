@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="javadoc">
     <target name="javadoc">
-        <javadoc access="private" author="true" classpath="src/mysql-connector-java-8.0.27.jar" destdir="../doc/JavaDoc" doctitle="CashMadrid JavaDoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="16" sourcefiles="src/Main.java,src/Query.java,src/Conexion.java,src/Display.java,src/Cuenta.java,src/Cliente.java,src/Transferencia.java" sourcepath="src" splitindex="true" use="true" version="true">
+        <javadoc access="private" author="true" classpath="src/mysql-connector-java-8.0.27.jar" destdir="../doc/JavaDoc" doctitle="CashMadrid JavaDoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="16" sourcefiles="src/Panel.java,src/Main.java,src/Login.java,src/Statement.java,src/Query.java,src/Conexion.java,src/Cuenta.java,src/Data.java,src/Cliente.java,src/Transferencia.java" sourcepath="src" splitindex="true" use="true" version="true">
             <link href="file:/C:/Users/mario/Documents/GitHub/MarioGabIFP/CashMadrid/doc/JavaDoc/"/>
             <link href="https://docs.oracle.com/en/java/javase/16/docs/api/"/>
         </javadoc>

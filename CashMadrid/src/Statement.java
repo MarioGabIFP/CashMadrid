@@ -5,11 +5,19 @@
  */
 public enum Statement {
 	/**
-	 * Sentencia DML Select
+	 * Sentencia Select
 	 */
 	SELECT,
 	/**
 	 * Senetencia Insert
 	 */
-	INSERT
+	INSERT,
+	/**
+	 * Sentencia Update
+	 */
+	UPDATE,
+	/**
+	 * Sentencia Delete
+	 */
+	DELETE
 }
