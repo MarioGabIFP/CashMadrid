@@ -3,7 +3,7 @@ import javax.swing.*;
 
 /**
  * Cash Madrid.:
- * 
+ * <br><br>
  * Programa desarrollado para la realización del primer trabajo de Programacion en el 2º Trimestre
  * del 1º Curso de Desarrollo de aplicaciones Multiplataforma.
  * <br><br>
@@ -16,35 +16,35 @@ import javax.swing.*;
  * 	- La aplicación aún hay que optimizarla un poco mas, no he podido optimizarlo más dado las fechas de entrega
  *  - Me Huebra gustado añadir mas elementos de interaccion con el usuario, pero al ser algo añadido de más a la
  *    aplicación, me he centrado en terminar lo basico y luego he añadido más cosas por mi cuenta y riesgo
- *    
+ * <br><br>
  * P.D.: por mi cuenta seguiré trabajando en la aplicación para perfeccionarla, dando prieoridad a las entregas
  * activas eso sí.
+ * <br><br>
+ * <br><br>Ubicacion del Enunciado: .\CashMadrid\doc\Practica Banco v2.pdf
+ * <br>Ubicación del JavaDoc: .\CashMadrid\doc\JavaDoc
+ * <br>Ubicacion de la definicion de la base de datos (SQL): .\CashMadrid\doc\SQL\cdb.sql
+ * <br>Ubicacion del Ejecutable en .jar: .\CashMadrid\BIN\CashMadrid.jar
  * 
- * Ubicacion del Enunciado: .\CashMadrid\doc\Practica Banco v2.pdf
- * Ubicación del JavaDoc: .\CashMadrid\doc\JavaDoc
- * Ubicacion de la definicion de la base de datos (SQL): .\CashMadrid\doc\SQL\cdb.sql
- * Ubicacion del Ejecutable en .jar: .\CashMadrid\BIN\CashMadrid.jar
- * 
- * Nota: en la misma definición de la base de datos se generan unos datos por defecto para poder 
+ * <br><br>Nota: en la misma definición de la base de datos se generan unos datos por defecto para poder 
  * usar la aplicacion con datos.
  * 
- * @author Mario Gabriel Núñez Alcázar de Velasco
+ * @author Mario Gabriel Núñez Alcázar de Velasco.
  */
 public class Main {
 	/**
-	 * Declaramos el objeto login
+	 * Declaramos el objeto login.
 	 */
 	public static Login login;
 	
 	/**
-	 * Declaramos el objeto conexion
+	 * Declaramos el objeto conexion.
 	 */
 	public static Conexion conexion;
 	
 	/**
-	 * Funcion principal el programa
+	 * Método principal el programa.
 	 * 
-	 * @param args - Argumentos del Main
+	 * @param args - Argumentos del Main.
 	 */
 	public static void main(String[] args) {
 		/*
@@ -80,7 +80,7 @@ public class Main {
 	}
 
 	/**
-	 * Método que inicia la ventana de la aplicación
+	 * Método que inicia la ventana de la aplicación.
 	 */
 	private static void StartWin() {
 		/*
@@ -109,7 +109,7 @@ public class Main {
 	 * Método que comprueba si los datos de la conexion son correctos o no 
 	 * (simplemente probando que la conexion se realiza con normalidad).
 	 * 
-	 * @return Boolean - True/False:<br> True: Conexion realizada correctamente <br>False: Error en la conexion
+	 * @return Boolean - True/False.<br>True: Conexion realizada correctamente.<br>False: Error en la conexion.
 	 */
 	private static boolean tryCxn() {
 		//Establecemos los datos de la conexion:

@@ -6,7 +6,7 @@
 public class Cliente {
 	
 	/**
-	 * Numero interno de Identificacion
+	 * Numero interno de Identificacion.
 	 */
 	private int idCli;
 	
@@ -41,7 +41,7 @@ public class Cliente {
 	private String dmcl;
 	
 	/**
-	 * Estado del cliente; True - Cliente activo, False - Cliente dado de baja
+	 * Estado del cliente.<br>True - Cliente activo.<br>False - Cliente dado de baja.
 	 */
 	private Boolean stts;
 	
@@ -52,6 +52,7 @@ public class Cliente {
 
 	/**
 	 * Método Get para obtener el Numero de Identificacion Fiscal del cliente en el objeto.
+	 * 
 	 * @return nif - Numero de Identificacion Fiscal del cliente.
 	 */
 	public String getNif() {
@@ -60,6 +61,7 @@ public class Cliente {
 
 	/**
 	 * Método Get para obtener el Nombre del cliente en el objeto.
+	 * 
 	 * @return nmbr - Nombre del cliente.
 	 */
 	public String getNmbr() {
@@ -68,6 +70,7 @@ public class Cliente {
 
 	/**
 	 * Método Get para obtener los apellidos del cliente en el objeto.
+	 * 
 	 * @return apllds - Apellidos del cliente.
 	 */
 	public String getApllds() {
@@ -76,6 +79,7 @@ public class Cliente {
 
 	/**
 	 * Método Get para obtener el Telefono del cliente en el objeto.
+	 * 
 	 * @return tlfn - Telefono del cliente.
 	 */
 	public String getTlfn() {
@@ -84,6 +88,7 @@ public class Cliente {
 
 	/**
 	 * Método Get para obtener el E-Mail del cliente en el objeto.
+	 * 
 	 * @return eml - E-Mail del cliente.
 	 */
 	public String getEml() {
@@ -92,6 +97,7 @@ public class Cliente {
 
 	/**
 	 * Método Get para obtener el Domicilio del cliente en el objeto.
+	 * 
 	 * @return dmcl - Domicilio del cliente.
 	 */
 	public String getDmcl() {
@@ -100,6 +106,7 @@ public class Cliente {
 
 	/**
 	 * Método Set para establecer el NIF del cliente en el objeto.
+	 * 
 	 * @param nif - NIF del cliente.
 	 */
 	public void setNif(String nif) {
@@ -108,6 +115,7 @@ public class Cliente {
 
 	/**
 	 * Método Set para establecer el Nombre del cliente en el objeto.
+	 * 
 	 * @param nmbr - Nombre del cliente.
 	 */
 	public void setNmbr(String nmbr) {
@@ -116,6 +124,7 @@ public class Cliente {
 
 	/**
 	 * Método Set para establecer los Apellidos del cliente en el objeto.
+	 * 
 	 * @param apllds - Apellidos del cliente.
 	 */
 	public void setApllds(String apllds) {
@@ -124,6 +133,7 @@ public class Cliente {
 
 	/**
 	 * Método Set para establecer el Telefono del cliente en el objeto.
+	 * 
 	 * @param tlfn - Telefono del cliente.
 	 */
 	public void setTlfn(String tlfn) {
@@ -132,6 +142,7 @@ public class Cliente {
 
 	/**
 	 * Método Set para establecer el E-Mail del cliente en el objeto.
+	 * 
 	 * @param eml - E-Mail del cliente.
 	 */
 	public void setEml(String eml) {
@@ -140,6 +151,7 @@ public class Cliente {
 
 	/**
 	 * Método Set para establecer el domicilio del cliente en el objeto.
+	 * 
 	 * @param dmcl - Domicilio del cliente.
 	 */
 	public void setDmcl(String dmcl) {
@@ -148,6 +160,7 @@ public class Cliente {
 
 	/**
 	 * Método Get para obtener el Identificador interno del cliente en el objeto.
+	 * 
 	 * @return idCli - Identificador interno del cliente.
 	 */
 	public int getIdCli() {
@@ -156,6 +169,7 @@ public class Cliente {
 
 	/**
 	 * Método Set para establecer el Identificador interno del cliente en el objeto.
+	 * 
 	 * @param idCli - Identificador interno del cliente.
 	 */
 	public void setIdCli(int idCli) {
@@ -164,6 +178,7 @@ public class Cliente {
 
 	/**
 	 * Método Get para obtener el Estado del cliente en el objeto.
+	 * 
 	 * @return stts - Estado del cliente.
 	 */
 	public Boolean getStts() {
@@ -172,6 +187,7 @@ public class Cliente {
 
 	/**
 	 * Método Set para establecer el Estado interno del cliente en el objeto.
+	 * 
 	 * @param stts - Estado del cliente.
 	 */
 	public void setStts(Boolean stts) {

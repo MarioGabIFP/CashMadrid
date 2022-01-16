@@ -8,9 +8,10 @@ import javax.swing.table.*;
 import java.awt.Font;
 
 /**
- * Clase que representa a la ventana principal del programa.
+ * Clase que representa a la ventana principal del programa, Aquí se realiza todo lo relativo a la recuperación
+ * y exposición de los datos.
  * 
- * @author Mario Gabriel Núñez Alcázar de Velasco
+ * @author Mario Gabriel Núñez Alcázar de Velasco.
  */
 public class Panel {
 	/**
@@ -26,56 +27,56 @@ public class Panel {
 	 */
 	private Conexion conexion;
 	/**
-	 * Seleccion del DNI por parte del usuario
+	 * Seleccion del DNI por parte del usuario.
 	 */
 	private String slctnDNI;
 	/**
-	 * Combo Box que contendra los IBAN de las cuentas de los clientes
+	 * Combo Box que contendra los IBAN de las cuentas de los clientes.
 	 */
 	private JComboBox<String> cueComboBox;
 	/**
-	 * ComboBox que contrendra los DNI de los clientes
+	 * ComboBox que contrendra los DNI de los clientes.
 	 */
 	private JComboBox<String> cliComboBox;
 	/**
-	 * Array de Clientes Activos
+	 * Array de Clientes Activos.
 	 */
 	private Cliente[] cli;
 	/**
-	 * Array con todos los clientes, activos y no activos
+	 * Array con todos los clientes, activos y no activos.
 	 */
 	private Cliente[] allCli;
 	/**
-	 * Array de cuentas
+	 * Array de cuentas.
 	 */
 	private Cuenta[] cu = new Cuenta[0];
 	/**
-	 * Array de Transferencias
+	 * Array de Transferencias.
 	 */
 	private Transferencia[] trans;
 	/**
-	 * un solo cliente
+	 * un solo cliente.
 	 */
 	private Cliente clie;
 	/**
-	 * una sola cuenta
+	 * una sola cuenta.
 	 */
 	private Cuenta cuen;
 	/**
-	 * Panel de transferencias realizadas
+	 * Panel de transferencias realizadas.
 	 */
 	private JList<String> movDebe;
 	/**
-	 * Panel de transferencias Emitidas
+	 * Panel de transferencias Emitidas.
 	 */
 	private JList<String> movHaber;
 	/**
-	 * Panel de Movimientos
+	 * Panel de Movimientos.
 	 */
 	private JTabbedPane movPane;
 	
 	/**
-	 * Formato fecha
+	 * Formato fecha.
 	 */
 	SimpleDateFormat dtfrmt = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -93,7 +94,7 @@ public class Panel {
 	}
 
 	/**
-	 * Método que se usará para recoger todos los datos de la base de datos en Arrays
+	 * Método que se usará para recoger todos los datos de la base de datos en Arrays.
 	 */
 	private void crgrDts() {
 		/*
@@ -514,7 +515,7 @@ public class Panel {
 	}
 
 	/**
-	 * Método para realizar una transferencia a cuenta
+	 * Método para realizar una transferencia a cuenta.
 	 */
 	protected void crrTransf() {
 		// si la cuenta de origen seleccionada no tiene la fecha fin rellena
@@ -610,7 +611,7 @@ public class Panel {
 	}
 
 	/**
-	 * Método para Ingresar Efectivo en la cuenta
+	 * Método para Ingresar Efectivo en la cuenta.
 	 */
 	protected void ngrsFctv() {
 		// si la cuenta de origen seleccionada no tiene la fecha fin rellena
@@ -682,7 +683,7 @@ public class Panel {
 	}
 
 	/**
-	 * Método para dar de baja un cliente
+	 * Método para dar de baja un cliente.
 	 */
 	protected void bjclnt() {
 		//mostramos mensaje de confirmación
@@ -712,7 +713,7 @@ public class Panel {
 	}
 	
 	/**
-	 * Método para dar de baja a una cuenta
+	 * Método para dar de baja a una cuenta.
 	 */
 	protected void bjcnt() {
 		//si el la cuenta no está ya dada de baja
@@ -968,7 +969,7 @@ public class Panel {
 	/**
 	 * Método para insertar clientes en la base de datos.
 	 * 
-	 * @param values - Valores a insertar en la base de datos con la informacion del nuevo cliente
+	 * @param values - Valores a insertar en la base de datos con la informacion del nuevo cliente.
 	 */
 	private void nsrtrCli(String values) {
  		//Establecemos los datos de la query y la modalidad de retorno
@@ -987,7 +988,7 @@ public class Panel {
 	/**
 	 * Método para insertar cuentas en la base de datos y asiganrlas al cliente solicitado.
 	 * 
-	 * @param values - Valores a insertar con los datos de la cuenta y del cliente a asignar
+	 * @param values - Valores a insertar con los datos de la cuenta y del cliente a asignar.
 	 */
 	private void nsrtrCu(String values) {
  		//Establecemos los datos de la query y la modalidad de retorno
@@ -1004,18 +1005,18 @@ public class Panel {
 	}
 
 	/**
-	 * Metodo para obtener el JFrame del Frame activo
+	 * Metodo para obtener el JFrame del Frame activo.
 	 * 
-	 * @return JFrame - frame activo
+	 * @return JFrame - frame activo.
 	 */
 	public JFrame getFrame() {
 		return frmCashMadrid;//devolvemos el frame activo.
 	}
 
 	/**
-	 * Metodo para establecer el Frame activo
+	 * Metodo para establecer el Frame activo.
 	 * 
-	 * @param frame - Frame que deseamos que se convierta en el Frame Activo 
+	 * @param frame - Frame que deseamos que se convierta en el Frame Activo. 
 	 */
 	public void setFrame(JFrame frame) {
 		this.frmCashMadrid = frame;//Establecemos el Frame activo
@@ -1025,7 +1026,7 @@ public class Panel {
 	
 	/**
 	 * Función para obtener todos los datos de todos los clientes de la base de datos.
-	 * @return Cliente[] - Array de clientes
+	 * @return Cliente[] - Array de clientes.
 	 */
 	private Cliente[] obtnrCli() {
 		/*
@@ -1056,10 +1057,10 @@ public class Panel {
 	}
 	
 	/**
-	 * Función para obtener todos los datos de todas las cuentas asociados al cliente
+	 * Función para obtener todos los datos de todas las cuentas asociados al cliente.
 	 * 
-	 * @param dni - DNI/NIF/NIE del cliente a consultar
-	 * @return Cuenta[] - Array de cuentas
+	 * @param dni - DNI/NIF/NIE del cliente a consultar.
+	 * @return Cuenta[] - Array de cuentas.
 	 */
 	private Cuenta[] obtnrCu(String dni) {
 		/*
@@ -1090,10 +1091,10 @@ public class Panel {
 	}
 	
 	/**
-	 * Funcion para obtener la lista de todos los NIF/DNI/NIE de los clientes ubicados en un mismo Array de Clientes
+	 * Funcion para obtener la lista de todos los NIF/DNI/NIE de los clientes ubicados en un mismo Array de Clientes.
 	 *  
-	 * @param cli - Array de Clientes a consultar
-	 * @return String[] - Array de Strings que contendra los DNI/NIE/NIF de los clientes solicitados
+	 * @param cli - Array de Clientes a consultar.
+	 * @return String[] - Array de Strings que contendra los DNI/NIE/NIF de los clientes solicitados.
 	 */
 	private String[] obtnrNif(Cliente[] cli) {
 		String[] nif = new String[0]; //Declaramos el String con tamaño de Array a 0
@@ -1112,10 +1113,10 @@ public class Panel {
 	}
 	
 	/**
-	 * Funcion para obtener la lista de todos los IBAN de las Cuentas ubicadas en un mismo Array de Cuentas
+	 * Funcion para obtener la lista de todos los IBAN de las Cuentas ubicadas en un mismo Array de Cuentas.
 	 *  
-	 * @param cu - Array de Cuentas a consultar
-	 * @return String[] - Array de Strings que contendra los IBAN de las cuentas solicitadas
+	 * @param cu - Array de Cuentas a consultar.
+	 * @return String[] - Array de Strings que contendra los IBAN de las cuentas solicitadas.
 	 */
 	private String[] obtnrIBAN(Cuenta[] cu) {
 		String[] iban = new String[0];//Declaramos el String con tamaño de Array a 0
@@ -1134,9 +1135,9 @@ public class Panel {
 	}
 	
 	/**
-	 * Funcion para rellenar los campos de la Ventana
+	 * Funcion para rellenar los campos de la Ventana.
 	 * 
-	 * @param slctnDNI - DNI del cliente seleccionado
+	 * @param slctnDNI - DNI del cliente seleccionado.
 	 */
 	private void setDataCli(String slctnDNI) {
 		//Obtenemos todos los datos del cliente seleccionado en el ComboBox
@@ -1190,10 +1191,10 @@ public class Panel {
 	}
 	
 	/**
-	 * Método desarrollado para rellenar los datos del JTable
+	 * Método desarrollado para rellenar los datos del JTable.
 	 * 
-	 * @param clie - Cliente a pintar en el JTable
-	 * @param cuen - Cuenta a pintar en el JTable
+	 * @param clie - Cliente a pintar en el JTable.
+	 * @param cuen - Cuenta a pintar en el JTable.
 	 */
 	private void rllnrTbl(Cliente clie, Cuenta cuen) {
 		if (cuen != null) {//si existen datos de cuenta
@@ -1279,8 +1280,8 @@ public class Panel {
 	/**
 	 * Método que Recupera las cuentas de un cliente partiendo del DNI del mismo.
 	 * 
-	 * @param DNI - Numero de Identificación del Titular de las cuentas
-	 * @return Cuenta[] - Array de Cuentas Resultante
+	 * @param DNI - Numero de Identificación del Titular de las cuentas.
+	 * @return Cuenta[] - Array de Cuentas Resultante.
 	 */
 	private Cuenta[] gtCuTit(String DNI) {
 		int x = 0;//establecemos el contador a 0
@@ -1299,8 +1300,8 @@ public class Panel {
 	/**
 	 * Método que Recupera una sola cuenta partiendo del IBAN.
 	 * 
-	 * @param iban - IBAN de la cuenta a consultar
-	 * @return Cuenta - Cuenta resultante
+	 * @param iban - IBAN de la cuenta a consultar.
+	 * @return Cuenta - Cuenta resultante.
 	 */
 	private Cuenta gtUnCu(String iban) {
 		Cuenta ccc = null;//establecemos la Cuenta a null
@@ -1314,10 +1315,10 @@ public class Panel {
 	}
 	
 	/**
-	 * Método para Obtener el titular de la cuenta partiendo del Identificador de la misma
+	 * Método para Obtener el titular de la cuenta partiendo del Identificador de la misma.
 	 * 
-	 * @param idCu - Identificador interno de la cuenta
-	 * @return Cliente - Titular de la cuenta Consultada
+	 * @param idCu - Identificador interno de la cuenta.
+	 * @return Cliente - Titular de la cuenta Consultada.
 	 */
 	private Cliente gtUnCliCu(int idCu) {
 		Cliente cl = null;//Establecemos el Cliente a nulo
@@ -1330,10 +1331,10 @@ public class Panel {
 	}
 	
 	/**
-	 * Método para Obtener el Cliente de la cuenta Solcitada
+	 * Método para Obtener el Cliente de la cuenta Solcitada.
 	 * 
-	 * @param dni - DNI del cliente a extraer
-	 * @return Cliente - Cliente obtenido de la consulta
+	 * @param dni - DNI del cliente a extraer.
+	 * @return Cliente - Cliente obtenido de la consulta.
 	 */
 	private Cliente gtUnCli(String dni) {
 		Cliente cl = null;//Establecemos el Cliente a nulo
@@ -1347,21 +1348,21 @@ public class Panel {
 	}
 	
 	/**
-	 * Método para Buscar un Dato en un Array de String 
+	 * Método para Buscar un Dato en un Array de String. 
 	 * 
-	 * @param cdBscr - Dato a buscar
-	 * @param rrStrng - Array donde Buscar
-	 * @return Boolean - True para encontrado y False para no encontrado
+	 * @param cdBscr - Dato a buscar.
+	 * @param rrStrng - Array donde Buscar.
+	 * @return Boolean - True para encontrado y False para no encontrado.
 	 */
 	private Boolean srchArr(String cdBscr, String[] rrStrng) {
 		return Arrays.asList(rrStrng).contains(cdBscr);
 	}
 	
 	/**
-	 * Método que sustituye el formato decimal con el separador ',' (coma), por el formato con el separador '.' (punto)
+	 * Método que sustituye el formato decimal con el separador ',' (coma), por el formato con el separador '.' (punto).
 	 * 
-	 * @param  num - Número real con el separador ',' (coma)
-	 * @return Double - Número real con el separador '.' (punto) 
+	 * @param  num - Número real con el separador ',' (coma).
+	 * @return Double - Número real con el separador '.' (punto). 
 	 */
 	private Double suspc(String num) {
 		/*
@@ -1378,10 +1379,10 @@ public class Panel {
 	}
 	
 	/**
-	 * Método para obtener el Saldo de la cuenta Seleccionada
+	 * Método para obtener el Saldo de la cuenta Seleccionada.
 	 * 
-	 * @param idC - Id de la cuenta seleccionada
-	 * @return Double - Saldo de la cuenta
+	 * @param idC - Id de la cuenta seleccionada.
+	 * @return Double - Saldo de la cuenta.
 	 */
 	private Double btnrSld(Integer idC) {
 		Double sld = 0.00;//Establecemos el saldo a '0.00'
@@ -1397,7 +1398,8 @@ public class Panel {
 	}
 	
 	/**
-	 * Método para Obtener todas las transferencias registradas en la tabla
+	 * Método para Obtener todas las transferencias registradas en la tabla.
+	 * 
 	 * @return Transferencia[] - Array con las transferencias existentes en la tabla.
 	 */
 	private Transferencia[] obtnrTrnsfrnc() {
@@ -1429,9 +1431,9 @@ public class Panel {
 	}
 
 	/**
-	 * Método para obtener la lista de transferencias recibidas y enviadas de la cuenta seleccionada
+	 * Método para obtener la lista de transferencias recibidas y enviadas de la cuenta seleccionada.
 	 * 
-	 * @param idC - Identificador interno de la cuenta
+	 * @param idC - Identificador interno de la cuenta.
 	 */
 	private void obtnrTrn(Integer idC) {
 		String[] trnsfrncLstE = new String[0];//Declaramos el array de String para los Registros de las Transferencias Enviadas
@@ -1473,8 +1475,8 @@ public class Panel {
 	/**
 	 * Método para rellenar los datos del JLList con los registros de las transferencias.
 	 * 
-	 * @param trnsfrncRlzds - Registros de las transferencias realizadas
-	 * @param trnsfrncRcbds - Registros de las transferencias emitidas
+	 * @param trnsfrncRlzds - Registros de las transferencias realizadas.
+	 * @param trnsfrncRcbds - Registros de las transferencias emitidas.
 	 */
 	private void rllnrlst(String[] trnsfrncRlzds, String[] trnsfrncRcbds) {
 		//Rellenamos el Jlist de las transferencias Realizadas

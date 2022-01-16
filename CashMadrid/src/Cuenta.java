@@ -21,7 +21,7 @@ public class Cuenta {
 	private String iban;
 	
 	/**
-	 * Número de identificación interno de la cuenta
+	 * Número de identificación interno de la cuenta.
 	 */
 	private int idCu;
 	
@@ -59,6 +59,7 @@ public class Cuenta {
 
 	/**
 	 * Método Get para obtener el IBAN de la cuenta en el objeto.
+	 * 
 	 * @return iban - IBAN de la cuenta.
 	 */
 	public String getIban() {
@@ -67,6 +68,7 @@ public class Cuenta {
 
 	/**
 	 * Método Get para obtener el Nombre de la entidad bancaria en el objeto.
+	 * 
 	 * @return nmbrbnc - Nombre de la entidad bancaria.
 	 */
 	public String getNmbrbnc() {
@@ -75,6 +77,7 @@ public class Cuenta {
 
 	/**
 	 * Método Get para obtener el Titular de la cuenta en el objeto.
+	 * 
 	 * @return titular - Titular de la cuenta.
 	 */
 	public Cliente getTitular() {
@@ -83,6 +86,7 @@ public class Cuenta {
 
 	/**
 	 * Método Get para obtener el Saldo de la cuenta en el objeto.
+	 * 
 	 * @return saldo - Saldo de la cuenta.
 	 */
 	public double getSaldo() {
@@ -91,6 +95,7 @@ public class Cuenta {
 
 	/**
 	 * Método Get para obtener La Fecha de apertura de la cuenta en el objeto.
+	 * 
 	 * @return fechaApertura - Fecha de apertura de la cuenta.
 	 */
 	public Date getFechaApertura() {
@@ -99,6 +104,7 @@ public class Cuenta {
 
 	/**
 	 * Método Get para obtener La Fecha de Cierre de la cuenta en el objeto.
+	 * 
 	 * @return fechaCierre - Fecha de Cierre de la cuenta.
 	 */
 	public Date getFechaCierre() {
@@ -107,6 +113,7 @@ public class Cuenta {
 
 	/**
 	 * Método Set para establecer el IBAN de la cuenta en el objeto.
+	 * 
 	 * @param iban - IBAN de la cuenta.
 	 */
 	public void setIban(String iban) {
@@ -115,6 +122,7 @@ public class Cuenta {
 
 	/**
 	 * Método Set para establecer el Nombre de la entidad bancaria en el objeto.
+	 * 
 	 * @param nmbrbnc - Nombre de la entidad bancaria.
 	 */
 	public void setNmbrbnc(String nmbrbnc) {
@@ -123,6 +131,7 @@ public class Cuenta {
 
 	/**
 	 * Método Set para establecer el Titular de la cuenta en el objeto.
+	 * 
 	 * @param titular - Titular de la cuenta.
 	 */
 	public void setTitular(Cliente titular) {
@@ -131,6 +140,7 @@ public class Cuenta {
 
 	/**
 	 * Método Set para establecer el Saldo de la cuenta en el objeto.
+	 * 
 	 * @param saldo - Saldo de la cuenta.
 	 */
 	public void setSaldo(double saldo) {
@@ -139,6 +149,7 @@ public class Cuenta {
 
 	/**
 	 * Método Set para establecer la Fecha de apertura de la cuenta en el objeto.
+	 * 
 	 * @param fechaApertura - Fecha de apertura de la cuenta.
 	 */
 	public void setFechaApertura(Date fechaApertura) {
@@ -147,6 +158,7 @@ public class Cuenta {
 
 	/**
 	 * Método Set para establecer la Fecha de cierre de la cuenta en el objeto.
+	 * 
 	 * @param fechaCierre - Fecha de cierre de la cuenta.
 	 */
 	public void setFechaCierre(Date fechaCierre) {
@@ -155,6 +167,7 @@ public class Cuenta {
 
 	/**
 	 * Método Get para obtener el Número de identificación interno de la cuenta en el objeto.
+	 * 
 	 * @return idCu - Número de identificación interno de la cuenta.
 	 */
 	public int getIdCu() {
@@ -163,6 +176,7 @@ public class Cuenta {
 	
 	/**
 	 * Método Set para establecer el Número de identificación interno de la cuenta en el objeto.
+	 * 
 	 * @param idCu - Número de identificación interno de la cuenta.
 	 */
 	public void setIdCu(int idCu) {

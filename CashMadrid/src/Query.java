@@ -4,7 +4,7 @@ import java.util.*;
 /**
  * Objeto Query, aqui se encuentran las funciones correspondientes para realizar las querys a la base de datos.
  * 
- * @author Mario Gabriel Núñez Alcázar de Velasco
+ * @author Mario Gabriel Núñez Alcázar de Velasco.
  */
 public class Query {
 	/**
@@ -20,46 +20,49 @@ public class Query {
 	 */
 	private Statement type;
 	/**
-	 * Modificador de la query
+	 * Modificador de la query.
 	 */
 	private String mod;
 	/**
-	 * Valores a insertar en la Base de Datos
+	 * Valores a insertar en la Base de Datos.
 	 */
 	private String valIns;
 	/**
-	 * Dato a Extraer
+	 * Dato a Extraer.
 	 */
 	private Data dat;
 	/**
-	 * Cantidad de querys a concatenar
+	 * Cantidad de querys a concatenar.
 	 */
 	private Integer cant;
 	
 	/**
 	 * Resultado de la Query realizada.
+	 * <br>
 	 * Contendrá los registros obtenidos tras la query, por defecto se establece a [null].
 	 */
 	public static ResultSet result = null;
 	
 	/**
 	 * Metadata del resultado de la Query realizada.
+	 * <br>
 	 * Por defecto se establece a [null].
 	 */
 	public static ResultSetMetaData resultmtdt = null;
 	
 	/**
-	 * Declaramos el Array de Objetos en el que almacenaremos el resultado de la query
+	 * Declaramos el Array de Objetos en el que almacenaremos el resultado de la query.
 	 */
 	public static Object[] resul = new Object[0];//por defecto lo declaramos con tamaño '0'
 	
 	/**
-	 * Declaramos el Objeto PreparedStatment que se encargará de mandar la query al motor BDD para ejecutarlo
+	 * Declaramos el Objeto PreparedStatment que se encargará de mandar la query al motor BDD para ejecutarlo.
 	 */
 	public static PreparedStatement statment = null;
 	
 	/**
 	 * Declaracion del objeto conexion.
+	 * <br>
 	 * Realizará la conexion a la base de datos.
 	 */
 	Conexion conexion;
@@ -72,11 +75,11 @@ public class Query {
 	 * @param cols - Columna/s sobre las que se realizará la query solicitada.
 	 * @param tab - Tabla/s sobre la que se realizará la query solicitada.
 	 * @param type - Tipo de query solicitada.
-	 * @param mod - Modificadores de la Query
-	 * @param valIns - Valores a insertar (en el caso de un Insert)
-	 * @param dat - tipo de dato a extraer (En el caso del Select)
+	 * @param mod - Modificadores de la Query.
+	 * @param valIns - Valores a insertar (en el caso de un Insert).
+	 * @param dat - tipo de dato a extraer (En el caso del Select).
 	 * @param conexion - Conexion a la base de datos.
-	 * @param cant - Cantidad de querys a realizar (Para los Update y los Insert en varias tablas al mismo tiempo)
+	 * @param cant - Cantidad de querys a realizar (Para los Update y los Insert en varias tablas al mismo tiempo).
 	 */
 	public Query(String cols, String tab, Statement type, String mod, String valIns, Data dat, Conexion conexion, Integer cant) {
 		this.cols = cols;//Recojemos las columnas solicitadas
@@ -90,9 +93,9 @@ public class Query {
 	}
 	
 	/**
-	 * Metodo que se encargará de ejecutar la query solicitada y devolver los datos
+	 * Metodo que se encargará de ejecutar la query solicitada y devolver los datos.
 	 * 
-	 * @return Object[] - Array de objetos, retornará el Resultado de la Query realizada (Solo se usará en el caso de los Select, ya que los Update, Insert y Delete no devuelven nada)
+	 * @return Object[] - Array de objetos que retornará el Resultado de la Query realizada.<br>Solo se usará en el caso de los Select, ya que los Update, Insert y Delete no devuelven nada.
 	 */
 	public Object[] execute() {
 		//Declaramos la query a construir
