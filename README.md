@@ -1,4 +1,4 @@
-# CashMadrid
+# CashMadrid - Version Estable: 1.0.0
 Programa desarrollado para la realización del primer trabajo de Programacion en el 2º Trimestre del 1º Curso de Desarrollo de aplicaciones Multiplataforma.
 
 Visión: la aplicacion se ha desarrollado entendiendo que se destina a una entidad bancaria o a una empresa Gestora de activos; así que, lo desarrollado desde la vision del currito que esta en la ventanilla y que gestiona las peticiones de los clientes, de ahí el desarollo de la interfaz y del funcionamiento interno, asi como la estructura de la base de datos.
