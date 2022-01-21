@@ -1,4 +1,7 @@
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.*;
 
 /**
@@ -23,6 +26,10 @@ public class Conexion {
 	 * URL de acceso a la base de datos.
 	 */
 	private String url = "jdbc:mysql://Localhost:3306/" + nombreDB;
+	/**
+	 * log de eventos
+	 */
+	private Log log;
 	
 	/**
 	 * Variable de tipo Connection, se usará para establecer la conexion a true o false, según se haya podido o no conectar a la base de datos.
@@ -30,9 +37,11 @@ public class Conexion {
 	Connection conexion = null; //Establecemos la conexion por defecto a null
 	
 	/**
-	 * Constructor sin datos de entrada, se usará para declarar el objeto Conexion
+	 * Constructor sin datos de entrada (Salvo el log), se usará para declarar el objeto Conexion
 	 */
-	public Conexion() {}
+	public Conexion(Log log) {
+		this.log = log;
+	}
 	
 	/**
 	 * Constructor con datos de entrada, se usará para establecer el objeto conexion.
@@ -40,9 +49,10 @@ public class Conexion {
 	 * @param usuario - el usuario de acceso a la base de datos.
 	 * @param contraseña - la contraseña de acceso a la base de datos.
 	 */
-	public Conexion(String usuario, String contraseña) {
+	public Conexion(String usuario, String contraseña, Log log) {
 		this.usuario = usuario;
 		this.contraseña = contraseña;
+		this.log = log;
 	}
 
 	/**
@@ -57,12 +67,12 @@ public class Conexion {
 				conexion = DriverManager.getConnection(url, usuario, contraseña); 
 				if (conexion != null) {
 					//Si la conexion ha sucedido correctamente, mostramos mensaje de entrada
-					System.out.println("Conected to: " + url); 
+					log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Conected to: " + url);
 				}
 			} catch (SQLException e) {
 				//Mostramos error en el caso de no poder conectar al abase de datos solicitada
-				System.out.println("Unable to conected to: " + url);
-				System.out.println("SQL exception returned: " + e);
+				log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Unable to conected to: " + url);
+				log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - SQL exception returned: " + e);
 				JOptionPane.showMessageDialog(null, 
 						                      "Usuario o contraseña incorrectos.\nSi ha olvidado su contraseña, pongase en contacto con el administrador de sistemas", 
 										      "CashMadrid", 
@@ -71,7 +81,7 @@ public class Conexion {
 			}
 		} catch (ClassNotFoundException e) {
 			//En el caso de no cargar el DriverManager, mostramos error interno
-			System.out.println("Internal:" + e);
+			log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Internal:" + e);
 		}
 	}
 	

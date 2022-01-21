@@ -1,4 +1,7 @@
 import java.awt.EventQueue;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.*;
 
 /**
@@ -35,11 +38,14 @@ public class Main {
 	 * Declaramos el objeto login.
 	 */
 	public static Login login;
-	
 	/**
 	 * Declaramos el objeto conexion.
 	 */
 	public static Conexion conexion;
+	/**
+	 * Fichero Log
+	 */
+	public static Log log;
 	
 	/**
 	 * Método principal el programa.
@@ -47,6 +53,11 @@ public class Main {
 	 * @param args - Argumentos del Main.
 	 */
 	public static void main(String[] args) {
+		/*
+		 * creamos un fichero log, para almacenar todos los eventos de la app.
+		 */
+		log = new Log();//Declaramos el Objeto log
+		
 		/*
 		 * Nada más ejecutar el programa, pedimos al usuario que inicie sesión en el programa
 		 * 
@@ -60,21 +71,42 @@ public class Main {
 		JTextField passwordBDD = new JPasswordField(); //Contraseña
 		
 		//Declaramos el objeto con los input de la pantalla.
-		Object[] inputs = {"Usuario: ", userBDD, "Contraseña: ", passwordBDD};
+		Object[] inputs = {"Usuario: ", userBDD, //usuario de acceso a la base de datos
+						   "Contraseña: ", passwordBDD};//Contraseña de acceso a la base de datos
 		
 		//Mostramos input
-		int inpBool = JOptionPane.showConfirmDialog(null, inputs, "CashMadrid - Iniciar sesión", JOptionPane.OK_CANCEL_OPTION);
+		int inpBool = JOptionPane.showConfirmDialog(null, //Objeto padre
+				 									inputs, //Mensaje a mostrar (en este caso, solicitamos Datos)
+				 									"CashMadrid - Iniciar sesión", //Titulo del Mensaje
+				 									JOptionPane.OK_CANCEL_OPTION);//Opciones de confirmación
 		
 		//Evaluamos el boton pulsado por el usuario
 		switch (inpBool) {
 		case 0://Si pulsa en OK
-			//Establecemos los datos de la conexion introducidos por el usuario
-			login = new Login(userBDD.getText() + ";" + passwordBDD.getText());
+			/*
+			 * Obtenemos los datos escritos por el usuarío
+			 */
+			String user = userBDD.getText();//usuario
+			String pass = passwordBDD.getText();//Contraseña
 			
-			//Probamos la conexión y continuamos
-			if (tryCxn()) { //Si todo va bien
-				//Iniciamos la Aplicación
-				StartWin();
+			/*
+			 * comprobamos que se hayan escrito los datos solicitados
+			 */
+			if (!user.isBlank() && !pass.isBlank()) {
+				//Establecemos los datos de la conexion introducidos por el usuario
+				login = new Login(user + ";" + pass);
+				
+				//Probamos la conexión y continuamos
+				if (tryCxn()) { //Si todo va bien
+					//Iniciamos la Aplicación
+					StartWin();
+				} else {//si no
+					//Escribimos el error en el Log
+					log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: Imposible conectar a la base de datos");
+				}
+			} else {//Si no
+				//Escribirmos error en el log
+				log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: Se esperaban datos de inicio de sesíon");
 			}
 		}
 	}
@@ -93,15 +125,15 @@ public class Main {
 				 */
 				public void run() {
 					try { //Lo encapsulamos todo en un TryCath para capturar todo tipo de errores que puedan surgir en tiempo de ejecución
-						Panel window = new Panel(conexion); //Declaramos el Panel Ventana (Clase Panel dentro de este mismo proyecto.)
+						Panel window = new Panel(conexion, log); //Declaramos el Panel Ventana (Clase Panel dentro de este mismo proyecto.)
 						window.getFrame().setVisible(true);//Establecemos el panel como visible.
 					} catch (Exception e) {//en el caso de error
-						System.out.println("Error: " + e);//mostramos el error en consola
+						log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: " + e);//escribimos el error en el log
 					}
 				}
 			});
 		} catch (Exception e) {//mostramos el error en consola
-			System.out.println("Error: " + e);//mostramos el error en consola
+			log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: " + e);//escribimos el error en el log
 		}
 	}
 	
@@ -112,16 +144,21 @@ public class Main {
 	 * @return Boolean - True/False.<br>True: Conexion realizada correctamente.<br>False: Error en la conexion.
 	 */
 	private static boolean tryCxn() {
-		//Establecemos los datos de la conexion:
-		conexion = new Conexion(login.getConStr().split(";")[0], login.getConStr().split(";")[1]);
-		conexion.conect();//conectamos
+		/*
+		 * Establecemos los datos de la conexion:
+		 */
+		//Realizamos Split para separar el usuario de la contraseña en un array
+		String[] userPass = login.getConStr().split(";");
 		
-		//probamos la conexion
-		if (conexion.getConexion() != null) { //si la conexion se ha realizado correctamente
-			conexion.desconexion(); //desconectamos
-			return true;//devolvemos True
-		} else {//sino
-			return false;//devolvemos False
+		conexion = new Conexion(userPass[0], userPass[1], log);//Establecemos la conexión
+		conexion.conect();//Conectamos
+		
+		//Probamos la conexion
+		if (conexion.getConexion() != null) { //Si la conexion se ha realizado correctamente
+			conexion.desconexion(); //Desconectamos
+			return true;//Devolvemos True
+		} else {//Si no
+			return false;//Devolvemos False
 		}
 		
 	}

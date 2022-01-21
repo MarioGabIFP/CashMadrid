@@ -74,6 +74,10 @@ public class Panel {
 	 * Panel de Movimientos.
 	 */
 	private JTabbedPane movPane;
+	/**
+	 * Log de Eventos.
+	 */
+	private Log log;
 	
 	/**
 	 * Formato fecha.
@@ -87,10 +91,11 @@ public class Panel {
 	 * 
 	 * @param conexion - conexion a la base de datos. 
 	 */
-	public Panel(Conexion conexion) {
-		this.conexion = conexion;//Establecemos la conexion con la base de datos.
-		crgrDts();//Cargamos los datos
-		initialize(); //llamamos al método que construirá la ventana
+	public Panel(Conexion conexion, Log log) {
+		this.conexion = conexion;//Recojemos la conexion con la base de datos.
+		this.log = log; //Recojemos el log de eventos
+		crgrDts();// Cargamos los datos
+		initialize();// llamamos al método que construirá la ventana
 	}
 
 	/**
@@ -505,7 +510,8 @@ public class Panel {
 											   null,
 											   null, 
 											   conexion, 
-											   null);
+											   null, 
+											   log);
 					//ejecutamos la query
 					queryOBJ.execute();
 					reload();//Recargamos los datos.
@@ -576,7 +582,8 @@ public class Panel {
 														   idCnt + ", " + idCu + ", " + im + ", '" + cncpt.getText() + "'",
 														   null,
 														   conexion,
-														   1);
+														   1, 
+														   log);
 								//ejecutamos el insert
 								queryOBJ.execute();
 								reload();//volvemos a recoger los datos de la base de datos.
@@ -643,7 +650,8 @@ public class Panel {
 													   idCnt + ", " + im + ", 'Ingreso a Cuenta'",
 													   null,
 													   conexion,
-													   1);
+													   1, 
+													   log);
 							//ejecutamos el insert
 							queryOBJ.execute();
 							reload();//Volvemos a obtener los datos de la base de datos.
@@ -705,7 +713,8 @@ public class Panel {
 					   				   dtfrmt.format(new Date()) + "; 0",
 					   				   null,
 					   				   conexion,
-					   				   2);
+					   				   2, 
+									   log);
 			//ejecutamos el Update
 			queryOBJ.execute();
 			reload();//Volvemos a obtener los datos desde la base de datos.
@@ -735,7 +744,8 @@ public class Panel {
 										   dtfrmt.format(new Date()),
 										   null,
 										   conexion,
-										   1);
+										   1, 
+										   log);
 				//Ejecutamos el Update
 				queryOBJ.execute();
 				reload();//volvemos a obtener los datos de la base de datos.
@@ -980,7 +990,8 @@ public class Panel {
 								   values,
 								   null, 
 								   conexion, 
-								   1);
+								   1, 
+								   log);
 		//ejecutamos el insert
 		queryOBJ.execute();
 	}
@@ -999,7 +1010,8 @@ public class Panel {
 								   values,
 								   null,
 								   conexion,
-								   2);
+								   2, 
+								   log);
 		//ejecutamos el insert y recuperamos el resultado en un array de Objetos
 		queryOBJ.execute();
 	}
@@ -1041,7 +1053,8 @@ public class Panel {
 								   null,
 								   Data.CLIENTES, 
 								   conexion, 
-								   null);
+								   null, 
+								   log);
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
 		Object[] obj = queryOBJ.execute();
 		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
@@ -1075,7 +1088,8 @@ public class Panel {
 									null,
 									Data.CUENTA,
 									conexion, 
-									null);
+									null, 
+									log);
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
 		Object[] obj = queryOBJ.execute();
 		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
@@ -1415,7 +1429,8 @@ public class Panel {
 								   null,
 								   Data.TRANSFERENCIAS, 
 								   conexion, 
-								   null);
+								   null, 
+								   log);
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
 		Object[] obj = queryOBJ.execute();
 		//declaramos el array de Transferencias especificando como tamaño por defecto la cantidad de registros
