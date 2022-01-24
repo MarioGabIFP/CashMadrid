@@ -46,6 +46,10 @@ public class Main {
 	 * Fichero Log
 	 */
 	public static Log log;
+	/**
+	 * timeStamp de ejecución.
+	 */
+	public static SimpleDateFormat timeStamp = new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss");
 	
 	/**
 	 * Método principal el programa.
@@ -102,11 +106,11 @@ public class Main {
 					StartWin();
 				} else {//si no
 					//Escribimos el error en el Log
-					log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: Imposible conectar a la base de datos");
+					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: Imposible conectar a la base de datos");
 				}
 			} else {//Si no
 				//Escribirmos error en el log
-				log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: Se esperaban datos de inicio de sesíon");
+				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: Se esperaban datos de inicio de sesíon");
 			}
 		}
 	}
@@ -128,12 +132,12 @@ public class Main {
 						Panel window = new Panel(conexion, log); //Declaramos el Panel Ventana (Clase Panel dentro de este mismo proyecto.)
 						window.getFrame().setVisible(true);//Establecemos el panel como visible.
 					} catch (Exception e) {//en el caso de error
-						log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: " + e);//escribimos el error en el log
+						log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + e);//escribimos el error en el log
 					}
 				}
 			});
 		} catch (Exception e) {//mostramos el error en consola
-			log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: " + e);//escribimos el error en el log
+			log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + e);//escribimos el error en el log
 		}
 	}
 	

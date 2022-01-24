@@ -37,13 +37,6 @@ public class Conexion {
 	Connection conexion = null; //Establecemos la conexion por defecto a null
 	
 	/**
-	 * Constructor sin datos de entrada (Salvo el log), se usará para declarar el objeto Conexion
-	 */
-	public Conexion(Log log) {
-		this.log = log;
-	}
-	
-	/**
 	 * Constructor con datos de entrada, se usará para establecer el objeto conexion.
 	 * 
 	 * @param usuario - el usuario de acceso a la base de datos.

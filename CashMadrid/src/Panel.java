@@ -15,65 +15,45 @@ import java.awt.Font;
  */
 public class Panel {
 	/**
+	 * Conexion con la base de datos.
+	 */
+	private Conexion conexion;
+	
+	/**
 	 * Ventana Activa. 
 	 */
 	private JFrame frmCashMadrid;
+	
 	/**
 	 * Tabla que contendrá los datos del cliente.
 	 */
 	private JTable cliData;
-	/**
-	 * Conexion con la base de datos.
-	 */
-	private Conexion conexion;
-	/**
-	 * Seleccion del DNI por parte del usuario.
-	 */
-	private String slctnDNI;
+	
 	/**
 	 * Combo Box que contendra los IBAN de las cuentas de los clientes.
 	 */
 	private JComboBox<String> cueComboBox;
+	
 	/**
 	 * ComboBox que contrendra los DNI de los clientes.
 	 */
 	private JComboBox<String> cliComboBox;
-	/**
-	 * Array de Clientes Activos.
-	 */
-	private Cliente[] cli;
-	/**
-	 * Array con todos los clientes, activos y no activos.
-	 */
-	private Cliente[] allCli;
-	/**
-	 * Array de cuentas.
-	 */
-	private Cuenta[] cu = new Cuenta[0];
-	/**
-	 * Array de Transferencias.
-	 */
-	private Transferencia[] trans;
-	/**
-	 * un solo cliente.
-	 */
-	private Cliente clie;
-	/**
-	 * una sola cuenta.
-	 */
-	private Cuenta cuen;
+	
 	/**
 	 * Panel de transferencias realizadas.
 	 */
 	private JList<String> movDebe;
+	
 	/**
 	 * Panel de transferencias Emitidas.
 	 */
 	private JList<String> movHaber;
+	
 	/**
 	 * Panel de Movimientos.
 	 */
 	private JTabbedPane movPane;
+	
 	/**
 	 * Log de Eventos.
 	 */
@@ -82,7 +62,12 @@ public class Panel {
 	/**
 	 * Formato fecha.
 	 */
-	SimpleDateFormat dtfrmt = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat dtfrmt = new SimpleDateFormat("yyyy-MM-dd");
+	
+	/**
+	 * Cargamos el BackEnd del programa
+	 */
+	private BackEnd back = new BackEnd(conexion, log);
 	
 	/**
 	 * Constructor para iniciar la Ventana con la respectiva conexion a la base de datos.
@@ -94,64 +79,8 @@ public class Panel {
 	public Panel(Conexion conexion, Log log) {
 		this.conexion = conexion;//Recojemos la conexion con la base de datos.
 		this.log = log; //Recojemos el log de eventos
-		crgrDts();// Cargamos los datos
+		back.crgrDts();// Cargamos los datos
 		initialize();// llamamos al método que construirá la ventana
-	}
-
-	/**
-	 * Método que se usará para recoger todos los datos de la base de datos en Arrays.
-	 */
-	private void crgrDts() {
-		/*
-		 * Reinicializamos los Array
-		 */
-		trans = null;
-		cli = new Cliente[0];
-		cu = new Cuenta[0];
-		
-		/*
-		 * Cargamos todas las Transferencias
-		 */
-		trans = obtnrTrnsfrnc();
-		
-		/*
-		 * Cargamos los Datos de los Clientes Activos
-		 */
-		allCli = obtnrCli();
-
-		for (Cliente c: allCli) {
-			if (c.getStts()) {
-				cli = Arrays.copyOf(cli, cli.length + 1);
-				cli[cli.length - 1] = c;
-			}
-		}
-		
-		/*
-		 * cargamos los datos de las cuentas
-		 */
-		for (Cliente c: allCli) {//por cada cliente
-			String nif = c.getNif();//Obtenemos el dato NIF
-			
-			Cuenta[] tempArrCu = obtnrCu(nif);//Obtenemos las cuentas que pertenecen al cliente
-
-			/*
-			 * Para cada cuenta, obtenemos el saldo, el titular y lo introducimos en el Array de Cuentas 
-			 */
-			for (Cuenta s: tempArrCu) {
-				s.setTitular(c);//establecemos el titular
-				Double sld = btnrSld(s.getIdCu());//Obtenemos el saldo
-				
-				if (sld != null) {
-					s.setSaldo(sld);//establecemos el Saldo
-				}
-				
-				cu = Arrays.copyOf(cu, cu.length + 1);//aumentamos en 1 el tamaño del array
-				
-				if (cu[cu.length - 1] == null) {
-					cu[cu.length - 1] = s;//Introducimos el array en el array de cuentas
-				}
-			}
-		}
 	}
 
 	/**
@@ -473,29 +402,61 @@ public class Panel {
 			 * Mostramos error
 			 */
 			JOptionPane.showMessageDialog(null, 
-					  "Accion no disponible: Cuenta dada de baja", 
-					  "CashMadrid", 
-					  0, 
-					  null);
+					  					  "Accion no disponible: Cuenta dada de baja", 
+					  					  "CashMadrid", 
+					  					  0, 
+					  					  null);
 		} else if (ibanObj == null){ //si el Iban seleccionado es null.
 			/*
 			 * Mostramos error
 			 */
 			JOptionPane.showMessageDialog(null, 
-  					  "Accion no disponible: El Cliente no posee ninguna cuenta activa", 
-  					  "CashMadrid", 
-  					  0, 
-  					  null);
+  					  					  "Accion no disponible: El Cliente no posee ninguna cuenta activa", 
+  					  					  "CashMadrid", 
+  					  					  0, 
+  					  					  null);
 		} else { //si esta todo Ok
 			//obtenemos la pestaña activa.
 			JList<String> selPane = (JList<String>) movPane.getSelectedComponent();
 			String selTrans = selPane.getSelectedValue();//obtenemos el registro seleccionado
 
-			//siempre y cuando haya un registro seleccionado
-			if (selTrans != null) {
+			if (selTrans == null) {//si no hay ningún registro seleccionado
+				/*
+				 * Mostramos error
+				 */
+				JOptionPane.showMessageDialog(null, 
+	  					  					  "Debes seleccionar un registro de la lista", 
+	  					  					  "CashMadrid", 
+	  					  					  1, 
+	  					  					  null);
+			/******************************************************************************/
+			/************** INICIO ***************
+			 * Provisional a la espera de diseño *
+			 *************************************/
+			/*
+			 * Caso en el que intenta revertir un ingreso: aún en Diseño.
+			 */
+			} else if (selPane == movDebe) {//Si está intentando devolver un ingreso
+				/*
+				 * Mostramos error
+				 */
+				JOptionPane.showMessageDialog(null, 
+	  					  					  "Acción no disponible: No puedes rechazar un ingreso\nSi lo deseas puedes hablar con el emisor de la transferencía o con tu gestor bancario.", 
+	  					  					  "CashMadrid",
+	  					  					  1, 
+	  					  					  null);
+
+			/*************************************
+			 * Provisional a la espera de diseño *
+			 *************** FIN *****************/
+			/******************************************************************************/
+			} else {
 				//mostramos mensaje de confirmación
-				int opt = JOptionPane.showConfirmDialog(null, "¿Estas seguro de querer eliminar el movimiento?\nEsta accion modificará el saldo Contable", "CashMadrid", JOptionPane.OK_CANCEL_OPTION);
-				
+				int opt = JOptionPane.showConfirmDialog(null, 
+														"¿Estas seguro de querer eliminar el movimiento?\nEsta accion modificará el saldo Contable", 
+														"CashMadrid", 
+														JOptionPane.OK_CANCEL_OPTION, 
+														2);
 				//si selecciona "OK"
 				if(opt == 0) {
 					//Obtenemos el numero de referencia del registro seleccionado

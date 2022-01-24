@@ -22,7 +22,7 @@ public class Query {
 	/**
 	 * Tipo de query solicitada.
 	 */
-	private Statement type;
+	private Statement type; 
 	
 	/**
 	 * Modificador de la query.
@@ -81,6 +81,11 @@ public class Query {
 	private Log log;
 	
 	/**
+	 * timeStamp de ejecución.
+	 */
+	private SimpleDateFormat timeStamp = new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss");
+	
+	/**
 	 * Constructor de la Query.
 	 * 
 	 * <br>Se usará para establecer los datos con los que realizaremos la query. 
@@ -112,7 +117,7 @@ public class Query {
 	 * @return Object[] - Array de objetos que retornará el Resultado de la Query realizada.<br>Solo se usará en el caso de los Select, ya que los Update, Insert y Delete no devuelven nada.
 	 */
 	public Object[] execute() {
-		//Declaramos la query a construir
+		//Declaramos y reinicializamos la query a construir
 		String query = null;
 		
 		//Conectamos con la base de datos
@@ -145,7 +150,7 @@ public class Query {
 					//Evaluamos la tabla sobre al que se ha hecho la Query
 					switch (this.dat) {
 					case CLIENTES://Si es la tabla clientes
-						/**
+						/*
 						 * Bucle while por el que recorremos los registros obtenidos
 						 */
 						while(result.next() == true) {//Si hay datos en el registro siguiente 
@@ -195,17 +200,15 @@ public class Query {
 								}
 							}
 							
-							//Aumentamos el tamaño del Array que contendra los registros Extraidos en formato Object
-							resul = Arrays.copyOf(resul, i + 1);
-							//Insertamos el Objeto Cliente con los datos extraidos del registro actual
-							resul[i] = cli;
+							//Preparamos el registro para retornarlo con todos los demás
+							prepResul(cli, i);
 							//Aumentamos el contador de registro en '1'
 							i++;
 						}
 						
 						break;
 					case CUENTA://si es la tabla cuenta
-						/**
+						/*
 						 * Bucle while por el que recorremos los registros obtenidos
 						 */
 						while(result.next() == true) {//Si hay datos en el registro siguiente 
@@ -243,10 +246,8 @@ public class Query {
 								}
 							}
 							
-							//Aumentamos el tamaño del Array que contendra los registros Extraidos en formato Object
-							resul = Arrays.copyOf(resul, i + 1);
-							//Insertamos el Objeto Cuenta con los datos extraidos del registro actual
-							resul[i] = cu;
+							//Preparamos el registro para retornarlo con todos los demás
+							prepResul(cu, i);
 							//Aumentamos el contador de registro en '1'
 							i++;
 						}
@@ -295,10 +296,8 @@ public class Query {
 								}
 							}
 							
-							//Aumentamos el tamaño del Array que contendra los registros Extraidos en formato Object
-							resul = Arrays.copyOf(resul, i + 1);
-							//Insertamos el Objeto Transferencia con los datos extraidos del registro actual
-							resul[i] = trnsfrnc;
+							//Preparamos el registro para retornarlo con todos los demás
+							prepResul(trnsfrnc, i);
 							//Aumentamos el contador de registro en '1'
 							i++;
 						}
@@ -306,15 +305,12 @@ public class Query {
 						break;
 					}
 				} catch (SQLException e) {//en el caso de error
-					log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: " + e);//Mostramos el error en consola
+					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + e);//Mostramos el error en consola
 				}
 			} catch (NullPointerException i) {
 				//Si se sucede un error durante la ejecución
-				log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
 			}
-			
-			//Desconectamos de la base de datos
-			conexion.desconexion();
 			
 			//Retornamos el resultado de la Query en formato Object
 			return resul;
@@ -344,12 +340,9 @@ public class Query {
 					prep(query);
 				} catch (NullPointerException f) {
 					//Si se sucede un error durante la ejecución
-					log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
 				}
 			}
-			
-			//Desconectamos de la base de datos
-			conexion.desconexion();
 			
 			return null;//los Update no recuperan ninguún valor por lo que devolvemos nulo.
 		
@@ -379,12 +372,9 @@ public class Query {
 					prep(query);
 				} catch (NullPointerException f) {
 					//Si se sucede un error durante la ejecución
-					log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
 				}
 			}
-			
-			//Desconectamos de la base de datos
-			conexion.desconexion();
 			
 			return null;//como los Update no devuelven ningún Dato, retornamos null
 		
@@ -397,15 +387,28 @@ public class Query {
 				prep(query);
 			} catch (NullPointerException f) {
 				//Si se sucede un error durante la ejecución
-				log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
 			}
-			
+
 			return null;//como los Delete no devuelven ningún Dato, retornamos null
 		default://En el caso de que no exista la opcion, retornamos null
 			return null;
 		}
 	}
 	
+	/**
+	 * Método para preparar el resultado a devolver
+	 * 
+	 * @param obj - Objeto a devolver
+	 * @param i - Contador de posición
+	 */
+	private void prepResul(Object obj, int i) {
+		//Aumentamos el tamaño del Array que contendra los registros Extraidos en formato Object
+		resul = Arrays.copyOf(resul, i + 1);
+		//Insertamos el Objeto con los datos extraidos del registro recibido
+		resul[i] = obj;
+	}
+
 	/**
 	 * Metodo que prepara y ejecuta la Query.
 	 * 
@@ -429,7 +432,10 @@ public class Query {
 			//Obtenemos los metadatos de la query ejecutada
 			resultmtdt = result.getMetaData();
 		} catch (SQLException e) {//Si sucede error en la base de datos
-			log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Error: " + e);//Mostramos el error en la consola
+			log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + e);//Mostramos el error en la consola
 		}
+		
+		//Desconectamos de la base de datos
+		conexion.desconexion();
 	}
 }
