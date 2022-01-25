@@ -1,4 +1,3 @@
-import java.awt.EventQueue;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -38,18 +37,26 @@ public class Main {
 	 * Declaramos el objeto login.
 	 */
 	public static Login login;
+	
 	/**
 	 * Declaramos el objeto conexion.
 	 */
 	public static Conexion conexion;
+	
 	/**
 	 * Fichero Log
 	 */
 	public static Log log;
+	
 	/**
 	 * timeStamp de ejecución.
 	 */
 	public static SimpleDateFormat timeStamp = new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss");
+	
+	/**
+	 * Cargamos el BackEnd del programa
+	 */
+	private static BackEnd back;;
 	
 	/**
 	 * Método principal el programa.
@@ -120,25 +127,19 @@ public class Main {
 	 */
 	private static void StartWin() {
 		/*
+		 * Cargamos el motor interno de la aplicación
+		 */
+		back = new BackEnd(conexion, log);
+		
+		/*
+		 * Cargamos los datos desde la BDD
+		 */
+		back.crgrDts();
+		
+		/*
 		 * Ejecutamos la Ventana de Windows que contendra toda la funcionalidad del programa 
 		 */
-		try {//Lo encapsulamos todo en un TryCath para capturar todo tipo de errores que puedan surgir en tiempo de ejecución
-			EventQueue.invokeLater(new Runnable() {
-				/**
-				 * Funcion que ejecuta la ventana y la hace visible
-				 */
-				public void run() {
-					try { //Lo encapsulamos todo en un TryCath para capturar todo tipo de errores que puedan surgir en tiempo de ejecución
-						Panel window = new Panel(conexion, log); //Declaramos el Panel Ventana (Clase Panel dentro de este mismo proyecto.)
-						window.getFrame().setVisible(true);//Establecemos el panel como visible.
-					} catch (Exception e) {//en el caso de error
-						log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + e);//escribimos el error en el log
-					}
-				}
-			});
-		} catch (Exception e) {//mostramos el error en consola
-			log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + e);//escribimos el error en el log
-		}
+		back.crgrPnl(back);
 	}
 	
 	/**

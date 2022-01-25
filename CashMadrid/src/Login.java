@@ -9,11 +9,6 @@ public class Login {
 	 * String con los Datos de acceso a la base de datos.
 	 */
 	private String conStr;
-	
-	/**
-	 * Objeto Conexion.
-	 */
-	private Conexion conexion;
 
 	/**
 	 * Constructor con Datos que usaremos para establecer una sesión.

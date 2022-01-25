@@ -1,4 +1,0 @@
-
-2022/01/24.18:20:40 - Unable to conected to: jdbc:mysql://Localhost:3306/cashMadrid
-2022/01/24.18:20:40 - SQL exception returned: java.sql.SQLException: Access denied for user 'root'@'localhost' (using password: YES)
-2022/01/24.18:20:42 - Error: Imposible conectar a la base de datos
