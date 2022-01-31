@@ -1,4 +1,6 @@
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 import javax.swing.GroupLayout.*;
 import javax.swing.LayoutStyle.*;
@@ -254,7 +256,9 @@ public class Panel {
 		/*
 		 * Inicializamos todos los datos con valores recogidos de la base de datos.
 		 */
-		cliComboBox.setModel(new DefaultComboBoxModel<String>(back.obtnrNif(back.cli)));
+		ArrayList<String> nif_s = back.obtnrNif(back.cli);//Obtenemos todos los NIF a mostrar
+		//los mostramos en el ComboBox
+		cliComboBox.setModel(new DefaultComboBoxModel<String>(nif_s.toArray(new String[nif_s.size()])));
 		
 		/*
 		 * Capturamos el evento Load de la ventana
@@ -294,7 +298,7 @@ public class Panel {
 		 */
 		cliComboBox.addActionListener(new ActionListener() {
 					
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				JComboBox<String> slctn = (JComboBox<String>) event.getSource();//Recojemos el evento y lo clonamos
@@ -309,7 +313,7 @@ public class Panel {
 		 */
 		cueComboBox.addActionListener(new ActionListener() {
 					
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				JComboBox<String> slctn = (JComboBox<String>) event.getSource();//Recojemos el evento y lo clonamos
@@ -324,7 +328,7 @@ public class Panel {
 		 */
 		crtCli.addActionListener(new ActionListener() {
 					
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				back.ltClnt();
@@ -336,7 +340,7 @@ public class Panel {
 		 */
 		crtCu.addActionListener(new ActionListener() {
 					
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				back.ltCnt();
@@ -348,7 +352,7 @@ public class Panel {
 		 */
 		dltCu.addActionListener(new ActionListener() {
 					
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				back.bjcnt();
@@ -360,7 +364,7 @@ public class Panel {
 		 */
 		dltCli.addActionListener(new ActionListener() {
 					
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				back.bjclnt();
@@ -372,7 +376,7 @@ public class Panel {
 		 */
 		ingsCash.addActionListener(new ActionListener() {
 					
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				back.ngrsFctv();
@@ -384,7 +388,7 @@ public class Panel {
 		 */
 		crrTransf.addActionListener(new ActionListener() {
 			
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				back.crrTransf();
@@ -396,7 +400,7 @@ public class Panel {
 		 */
 		dscrTransf.addActionListener(new ActionListener() {
 			
-			//Heredamos la SuperClass actionPerformed 
+			//Aplicamos el actionPerformed 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				back.dscrTransf();

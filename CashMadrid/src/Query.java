@@ -1,6 +1,6 @@
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -61,7 +61,7 @@ public class Query {
 	/**
 	 * Declaramos el Array de Objetos en el que almacenaremos el resultado de la query.
 	 */
-	private Object[] resul = new Object[0];//por defecto lo declaramos con tamaño '0'
+	private ArrayList<Object> resul = new ArrayList<Object>();//por defecto lo declaramos con tamaño '0'
 	
 	/**
 	 * Declaramos el Objeto PreparedStatment que se encargará de mandar la query al motor BDD para ejecutarlo.
@@ -116,7 +116,7 @@ public class Query {
 	 * 
 	 * @return Object[] - Array de objetos que retornará el Resultado de la Query realizada.<br>Solo se usará en el caso de los Select, ya que los Update, Insert y Delete no devuelven nada.
 	 */
-	public Object[] execute() {
+	public ArrayList<Object> execute() {
 		//Declaramos y reinicializamos la query a construir
 		String query = null;
 		
@@ -127,7 +127,10 @@ public class Query {
 		switch (this.type) {
 		case SELECT: //En el caso de haber solicitado un Select
 			//Reinicializamos resultado
-			resul = new Object[0];
+			if (resul != null) {
+				resul.clear();
+			}
+			
 			//Construimos la query tal y como se ha solicitado
 			if(mod != null) {//si el modificador no es nulo
 				//montamos la query con los modificadores
@@ -145,8 +148,6 @@ public class Query {
 				 * Evaluamos que la recogida de los datos se produzca correctamente
 				 */
 				try {
-					int i = 0;//Damos de alta el contador para recorrer los registros obtenidos
-					
 					//Evaluamos la tabla sobre al que se ha hecho la Query
 					switch (this.dat) {
 					case CLIENTES://Si es la tabla clientes
@@ -200,10 +201,8 @@ public class Query {
 								}
 							}
 							
-							//Preparamos el registro para retornarlo con todos los demás
-							prepResul(cli, i);
-							//Aumentamos el contador de registro en '1'
-							i++;
+							//Insertamos el Objeto con los datos extraidos del registro recibido
+							resul.add(cli);
 						}
 						
 						break;
@@ -246,10 +245,8 @@ public class Query {
 								}
 							}
 							
-							//Preparamos el registro para retornarlo con todos los demás
-							prepResul(cu, i);
-							//Aumentamos el contador de registro en '1'
-							i++;
+							//Insertamos el Objeto con los datos extraidos del registro recibido
+							resul.add(cu);
 						}
 						
 						break;
@@ -296,10 +293,8 @@ public class Query {
 								}
 							}
 							
-							//Preparamos el registro para retornarlo con todos los demás
-							prepResul(trnsfrnc, i);
-							//Aumentamos el contador de registro en '1'
-							i++;
+							//Insertamos el Objeto con los datos extraidos del registro recibido
+							resul.add(trnsfrnc);
 						}
 						
 						break;
@@ -309,7 +304,7 @@ public class Query {
 				}
 			} catch (NullPointerException i) {
 				//Si se sucede un error durante la ejecución
-				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + i);
 			}
 			
 			//Retornamos el resultado de la Query en formato Object
@@ -394,19 +389,6 @@ public class Query {
 		default://En el caso de que no exista la opcion, retornamos null
 			return null;
 		}
-	}
-	
-	/**
-	 * Método para preparar el resultado a devolver
-	 * 
-	 * @param obj - Objeto a devolver
-	 * @param i - Contador de posición
-	 */
-	private void prepResul(Object obj, int i) {
-		//Aumentamos el tamaño del Array que contendra los registros Extraidos en formato Object
-		resul = Arrays.copyOf(resul, i + 1);
-		//Insertamos el Objeto con los datos extraidos del registro recibido
-		resul[i] = obj;
 	}
 
 	/**

@@ -1,0 +1,4 @@
+
+2022/01/31.13:17:48 - Conected to: jdbc:mysql://Localhost:3306/cashMadrid
+2022/01/31.13:17:48 - Conected to: jdbc:mysql://Localhost:3306/cashMadrid
+2022/01/31.13:17:48 - Error: java.lang.NullPointerException: Cannot invoke "java.util.ArrayList.add(Object)" because "this.resul" is null

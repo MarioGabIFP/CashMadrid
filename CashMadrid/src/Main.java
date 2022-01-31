@@ -1,6 +1,7 @@
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-
 import javax.swing.*;
 
 /**
@@ -56,7 +57,7 @@ public class Main {
 	/**
 	 * Cargamos el BackEnd del programa
 	 */
-	private static BackEnd back;;
+	private static BackEnd back;
 	
 	/**
 	 * Método principal el programa.
@@ -153,9 +154,10 @@ public class Main {
 		 * Establecemos los datos de la conexion:
 		 */
 		//Realizamos Split para separar el usuario de la contraseña en un array
-		String[] userPass = login.getConStr().split(";");
+		ArrayList<String> userPass = new ArrayList<String>();//declaramos ArrayList
+		Collections.addAll(userPass, login.getConStr().split(";"));//Recojemos los datos.
 		
-		conexion = new Conexion(userPass[0], userPass[1], log);//Establecemos la conexión
+		conexion = new Conexion(userPass.get(0), userPass.get(1), log);//Establecemos la conexión
 		conexion.conect();//Conectamos
 		
 		//Probamos la conexion

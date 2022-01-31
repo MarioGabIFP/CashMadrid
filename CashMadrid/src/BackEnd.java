@@ -1,8 +1,9 @@
 import java.awt.EventQueue;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-
+import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JList;
@@ -62,22 +63,22 @@ public class BackEnd {
 	/**
 	 * Array de Clientes Activos.
 	 */
-	public Cliente[] cli;
+	public ArrayList<Cliente> cli = new ArrayList<Cliente>();
 	
 	/**
 	 * Array con todos los clientes, activos y no activos.
 	 */
-	private static Cliente[] allCli;
+	private static ArrayList<Cliente> allCli = new ArrayList<Cliente>();
 	
 	/**
 	 * Array de cuentas.
 	 */
-	private static Cuenta[] cu;
+	private static ArrayList<Cuenta> cu = new ArrayList<Cuenta>();
 	
 	/**
 	 * Array de Transferencias.
 	 */
-	private static Transferencia[] trans;
+	private static ArrayList<Transferencia> trans = new ArrayList<Transferencia>();
 	
 	/******************************************************
 	 ********************** ARRAYS ************************
@@ -101,9 +102,11 @@ public class BackEnd {
 		/*
 		 * Reinicializamos los Array
 		 */
-		trans = null;
-		cli = new Cliente[0];
-		cu = new Cuenta[0];
+		if (trans != null) {
+			trans.clear();
+			cli.clear();
+			cu.clear();
+		}
 		
 		/*
 		 * Cargamos todas las Transferencias
@@ -117,8 +120,7 @@ public class BackEnd {
 
 		for (Cliente c: allCli) {
 			if (c.getStts()) {
-				cli = Arrays.copyOf(cli, cli.length + 1);
-				cli[cli.length - 1] = c;
+				cli.add(c);
 			}
 		}
 		
@@ -128,7 +130,7 @@ public class BackEnd {
 		for (Cliente c: allCli) {//por cada cliente
 			String nif = c.getNif();//Obtenemos el dato NIF
 			
-			Cuenta[] tempArrCu = obtnrCu(nif);//Obtenemos las cuentas que pertenecen al cliente
+			ArrayList<Cuenta> tempArrCu = obtnrCu(nif);//Obtenemos las cuentas que pertenecen al cliente
 
 			/*
 			 * Para cada cuenta, obtenemos el saldo, el titular y lo introducimos en el Array de Cuentas 
@@ -141,11 +143,7 @@ public class BackEnd {
 					s.setSaldo(sld);//establecemos el Saldo
 				}
 				
-				cu = Arrays.copyOf(cu, cu.length + 1);//aumentamos en 1 el tamaño del array
-				
-				if (cu[cu.length - 1] == null) {
-					cu[cu.length - 1] = s;//Introducimos el array en el array de cuentas
-				}
+				cu.add(s);
 			}
 		}
 	}
@@ -155,7 +153,7 @@ public class BackEnd {
 	 * 
 	 * @return Transferencia[] - Array con las transferencias existentes en la tabla.
 	 */
-	private Transferencia[] obtnrTrnsfrnc() {
+	private ArrayList<Transferencia> obtnrTrnsfrnc() {
 		/*
  		 * Select para rellenar los objetos Transferencia con los datos de la tabla Transferencia.
  		 * Cada registro de la tabla corresponderá a un objeto. 
@@ -165,23 +163,24 @@ public class BackEnd {
 								   "transferencias", 
 								   Statement.SELECT, 
 								   null, 
-								   null,
+								   null, 
 								   Data.TRANSFERENCIAS, 
 								   conexion, 
 								   null, 
 								   log);
+		
 		//ejecutamos la query y recuperamos el resultado en un array de Objetos
-		Object[] obj = queryOBJ.execute();
+		ArrayList<Object> obj = queryOBJ.execute();
 		//declaramos el array de Transferencias especificando como tamaño por defecto la cantidad de registros
-		Transferencia[] trnsfrnc = new Transferencia[obj.length];
+		List<Transferencia> trnsfrnc = new ArrayList<Transferencia>();
 		
 		//rellenamos el array de Transferencias; una Transferencia por registro, un objeto por Transferencia, todo en un mismo array
-		for (int i = 0;i < obj.length;i++) {
-			trnsfrnc[i] = (Transferencia) obj[i];
+		for (Object o: obj) {
+			trnsfrnc.add((Transferencia) o);
 		}
 		
 		//retornamos el array de Transferencias.
-		return trnsfrnc;
+		return (ArrayList<Transferencia>) trnsfrnc;
 	}
 	
 	/**
@@ -189,7 +188,7 @@ public class BackEnd {
 	 * 
 	 * @return Cliente[] - Array de clientes.
 	 */
-	private Cliente[] obtnrCli() {
+	private ArrayList<Cliente> obtnrCli() {
 		/*
  		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
  		 * Cada registro de la tabla corresponderá a un objeto. 
@@ -204,18 +203,19 @@ public class BackEnd {
 								   conexion, 
 								   null, 
 								   log);
-		//ejecutamos la query y recuperamos el resultado en un array de Objetos
-		Object[] obj = queryOBJ.execute();
-		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
-		Cliente[] cli = new Cliente[obj.length];
 		
-		//rellenamos el array de clientes; un cliente por registro, un objeto por cliente, todo en un mismo array
-		for (int i = 0;i < obj.length;i++) {
-			cli[i] = (Cliente) obj[i];
+		//ejecutamos la query y recuperamos el resultado en un array de Objetos
+		ArrayList<Object> obj = queryOBJ.execute();
+		//declaramos el array de Transferencias especificando como tamaño por defecto la cantidad de registros
+		List<Cliente> clie = new ArrayList<Cliente>();
+		
+		//rellenamos el array de Transferencias; una Transferencia por registro, un objeto por Transferencia, todo en un mismo array
+		for (Object c: obj) {
+			clie.add((Cliente) c);
 		}
 		
-		//retornamos el array de Clientes.
-		return cli;
+		//retornamos el array de Transferencias.
+		return (ArrayList<Cliente>) clie;
 	}
 	
 	/**
@@ -224,7 +224,7 @@ public class BackEnd {
 	 * @param dni - DNI/NIF/NIE del cliente a consultar.
 	 * @return Cuenta[] - Array de cuentas.
 	 */
-	private Cuenta[] obtnrCu(String dni) {
+	private ArrayList<Cuenta> obtnrCu(String dni) {
 		/*
  		 * Select para rellenar los objetos Cliente con los datos de la tabla Cliente.
  		 * Cada registro de la tabla corresponderá a un objeto. 
@@ -239,18 +239,19 @@ public class BackEnd {
 									conexion, 
 									null, 
 									log);
-		//ejecutamos la query y recuperamos el resultado en un array de Objetos
-		Object[] obj = queryOBJ.execute();
-		//declaramos el array de Clientes especificando como tamaño por defecto la cantidad de registros
-		Cuenta[] cu = new Cuenta[obj.length];
 		
-		//rellenamos el array de clientes; un cliente por registro, un objeto por cliente, todo en un mismo array
-		for (int i = 0;i < obj.length;i++) {
-			cu[i] = (Cuenta) obj[i];
+		//ejecutamos la query y recuperamos el resultado en un array de Objetos
+		ArrayList<Object> obj = queryOBJ.execute();
+		//declaramos el array de Transferencias especificando como tamaño por defecto la cantidad de registros
+		List<Cuenta> cuen = new ArrayList<Cuenta>();
+		
+		//rellenamos el array de Transferencias; una Transferencia por registro, un objeto por Transferencia, todo en un mismo array
+		for (Object c: obj) {
+			cuen.add((Cuenta) c);
 		}
 		
-		//retornamos el array de Cuentas.
-		return cu;
+		//retornamos el array de Transferencias.
+		return (ArrayList<Cuenta>) cuen;
 	}	
 	
 	/**
@@ -641,19 +642,15 @@ public class BackEnd {
 						  					  0, 
 						  					  null);
 			} else {//sino
-				int x = 0;//establecemos el contador a 0
-				
-				String[] IBAN_s = new String[0];//declaramos un Array de String temporal
+				List<String> IBAN_s = new ArrayList<String>();//declaramos un ArrayList de String temporal
 				
 				//Obtenemos todas las cuentas actuales del cliente
 				for (Cuenta c: cu) {
-					IBAN_s = Arrays.copyOf(IBAN_s, x + 1);
-					IBAN_s[x] = c.getIban();
-					x++;
+					IBAN_s.add(c.getIban());
 				}
 				
-				//si la cuenta no existe (para ello buscamos el IBAN dentro del Array de String obtenido)
-				if (!srchArr(ibanCmplt, IBAN_s)) {
+				//si la cuenta no existe (para ello buscamos el IBAN dentro del ArrayList de String obtenido)
+				if (!srchArr(ibanCmplt, (ArrayList<String>) IBAN_s)) {
 					/*
 					 * revisamos el formato del IBAN
 					 */
@@ -752,20 +749,15 @@ public class BackEnd {
 		switch (inpBool) { 
 		case 0://Si pulsa en OK
 			
-			int x = 0;//declaramos un nuevo contador
-			
 			//declaramos un nuevo Array de String para almacenar los DNI's Existentes
-			String[] DNI_s = new String[0];
+			List<String> DNI_s = new ArrayList<String>();
 			//declaramos un nuevo Array de String para almacenar los Email's Existentes
-			String[] EMAIL_s = new String[0];
+			List<String> EMAIL_s = new ArrayList<String>();
 			
 			//Obtenemos los Email y los Dni de todos los clientes
 			for (Cliente c: cli) {
-				DNI_s = Arrays.copyOf(DNI_s, x + 1);
-				EMAIL_s = Arrays.copyOf(EMAIL_s, x + 1);
-				DNI_s[x] = c.getNif();
-				EMAIL_s[x] = c.getEml();
-				x++;
+				DNI_s.add(c.getNif());
+				EMAIL_s.add(c.getEml());
 			}
 			
 			//Obtenemos los datos introducidos por el usuario.
@@ -785,9 +777,9 @@ public class BackEnd {
 											  null);
 			} else {//sino
 				//si el Email no existe en la base de datos.
-				if (!srchArr(ml, EMAIL_s)) {
+				if (!srchArr(ml, (ArrayList<String>) EMAIL_s)) {
 					//si el DNI no existe en la base de datos.
-					if (!srchArr(dni, DNI_s)) {
+					if (!srchArr(dni, (ArrayList<String>) DNI_s)) {
 						//mostamos la query con los valores introducidos.
 						String values = "'" + dni + "', '" + nmbr + "', '" + apell.getText() + "', '" + tel + "', '" + ml + "', '" + dmcl + "', " + 1;
 						nsrtrCli(values);//llamamos a procesar la petición.
@@ -821,7 +813,8 @@ public class BackEnd {
 		 */
 		crgrDts();
 		//Declaramos el modelo de datos insertando el Array resultante de "obtnrNif(obtnrCli()))" y lo insertamos en el ComboBox
-		window.cliComboBox.setModel(new DefaultComboBoxModel<String>(obtnrNif(cli)));
+		ArrayList<String> nif_s = obtnrNif(cli);//obtenemos todos los DNI
+		window.cliComboBox.setModel(new DefaultComboBoxModel<String>(nif_s.toArray(new String[nif_s.size()])));//lo mostramos en el comboBox
 		setDataCli(window.cliComboBox.getSelectedItem().toString());
 	}
 
@@ -871,20 +864,17 @@ public class BackEnd {
 	 * @param cli - Array de Clientes a consultar.
 	 * @return String[] - Array de Strings que contendra los DNI/NIE/NIF de los clientes solicitados.
 	 */
-	public String[] obtnrNif(Cliente[] cli) {
-		String[] nif = new String[0]; //Declaramos el String con tamaño de Array a 0
-		int x = 0;//declaramos el contador de Objetos
+	public ArrayList<String> obtnrNif(ArrayList<Cliente> cli) {
+		List<String> nif = new ArrayList<String>(); //Declaramos el String con tamaño de Array a 0
 		
 		/*
 		 * For para añadir en el Array de Strings el DNI de cada cliente
 		 */
 		for (Cliente c: cli) {//por cada cliente
-			nif = Arrays.copyOf(nif, x + 1);//aumentamos en 1 el tamaño del array
-			nif[x]= c.getNif();//Obtenemos el dato NIF y lo introducimos en la posicion actual del array
-			x++;//aumentamos en 1 el contador
+			nif.add(c.getNif());//Obtenemos el dato NIF y lo introducimos en la posicion actual del array
 		}
 		
-		return nif; //Devolvemos el Array resultante. 
+		return (ArrayList<String>) nif; //Devolvemos el Array resultante. 
 	}
 	
 	/**
@@ -893,20 +883,17 @@ public class BackEnd {
 	 * @param cu - Array de Cuentas a consultar.
 	 * @return String[] - Array de Strings que contendra los IBAN de las cuentas solicitadas.
 	 */
-	private String[] obtnrIBAN(Cuenta[] cu) {
-		String[] iban = new String[0];//Declaramos el String con tamaño de Array a 0
-		int x = 0;//declaramos el contador de Objetos
+	private ArrayList<String> obtnrIBAN(ArrayList<Cuenta> cu) {
+		List<String> iban = new ArrayList<String>();//Declaramos el ArrayList de Stringç
 		
 		/*
 		 * For para añadir en el Array de Strings el DNI de cada cliente
 		 */
 		for (Cuenta c: cu) {//por cada cuenta
-			iban = Arrays.copyOf(iban, x + 1);//aumentamos en 1 el tamaño del array
-			iban[x]= c.getIban();//Obtenemos el dato IBAN y lo introducimos en la posicion actual del array
-			x++;//aumentamos en 1 el contador
+			iban.add(c.getIban());//Obtenemos el dato IBAN y lo introducimos en la posicion actual del array
 		}
 		
-		return iban;//Devolvemos el Array resultante. 
+		return (ArrayList<String>) iban;//Devolvemos el Array resultante. 
 	}
 	
 	/**
@@ -920,10 +907,12 @@ public class BackEnd {
 		
 		if (clie != null) {
 			//obtenemos el listado de cuentas del cliente seleccionado
-			Cuenta[] cueArr = gtCuTit(slctnDNI);
+			ArrayList<Cuenta> cueArr = gtCuTit(slctnDNI);
 			
 			//Declaramos el modelo de datos insertando el Array resultante de "obtnrIBAN(obtnrCu(slctnDNI)" y lo insertamos en el ComboBox
-			window.cueComboBox.setModel(new DefaultComboBoxModel<String>(obtnrIBAN(cueArr)));
+			ArrayList<String> iban_s  = obtnrIBAN(cueArr);//obtenemos todos los IBAN del cliente Seleccionado
+			//los mostramos en el ComboBox.
+			window.cueComboBox.setModel(new DefaultComboBoxModel<String>(iban_s.toArray(new String[iban_s.size()])));
 			
 			//Establecemos los datos de la cuenta
 			setDataCue(window.cueComboBox.getSelectedItem());
@@ -1058,18 +1047,15 @@ public class BackEnd {
 	 * @param DNI - Numero de Identificación del Titular de las cuentas.
 	 * @return Cuenta[] - Array de Cuentas Resultante.
 	 */
-	private Cuenta[] gtCuTit(String DNI) {
-		int x = 0;//establecemos el contador a 0
-		Cuenta[] ccc = new Cuenta[x];//establecemos el Array de Cuentas a 0
+	private ArrayList<Cuenta> gtCuTit(String DNI) {
+		List<Cuenta> ccc = new ArrayList<Cuenta>();//establecemos el Array de Cuentas a 0
 		for (Cuenta c: cu) {//para cada cuenta
 			//Si el DNI del titular de la cuenta es igual al DNI del cliente Solicitado 
 			if (c.getTitular().getNif().equals(DNI)) {
-				ccc = Arrays.copyOf(ccc, x + 1);//aumentamos en '1' el tamaño del Array de Cuentas
-				ccc[x] = c;//Movemos la cuenta al Array
-				x++;//aumentamos en 1 el array
+				ccc.add(c);//Movemos la cuenta al Array
 			}
 		}
-		return ccc;//devolvemos el Array resultante
+		return (ArrayList<Cuenta>) ccc;//devolvemos el Array resultante
 	}
 	
 	/**
@@ -1129,8 +1115,8 @@ public class BackEnd {
 	 * @param rrStrng - Array donde Buscar.
 	 * @return Boolean - True para encontrado y False para no encontrado.
 	 */
-	private Boolean srchArr(String cdBscr, String[] rrStrng) {
-		return Arrays.asList(rrStrng).contains(cdBscr);
+	private Boolean srchArr(String cdBscr, ArrayList<String> rrStrng) {
+		return rrStrng.contains(cdBscr);
 	}
 	
 	/**
