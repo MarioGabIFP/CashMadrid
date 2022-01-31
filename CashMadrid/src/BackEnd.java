@@ -186,6 +186,7 @@ public class BackEnd {
 	
 	/**
 	 * Función para obtener todos los datos de todos los clientes de la base de datos.
+	 * 
 	 * @return Cliente[] - Array de clientes.
 	 */
 	private Cliente[] obtnrCli() {
@@ -391,9 +392,16 @@ public class BackEnd {
 				
 				switch (inpBool) {
 				case 0://si el usuario pulsa "OK"
-					if (imprt != null) {//si el importe no es null
+					String bn = iban.getText();//obtenemos el iban destino
+					if (gtUnCu(bn).getFechaCierre() != null) {//si la cuenta destino esta cerrada
+						//mostramos mensaje de error
+						JOptionPane.showMessageDialog(null, 
+													  "La cuenta referenciada se encuentra dada de baja", 
+													  "CashMadrid", 
+													  0, 
+													  null);
+					} else if (imprt != null) {//si el importe no es null
 						String imp = imprt.getText();//obtenemos el importe
-						String bn = iban.getText();//obtenemos el iban destino
 						//si el importe es numerico real o decimal (con coma o punto)
 						if(imp.matches("[+-]?\\d*(,\\d+)?") || imp.matches("[+-]?\\d*(\\.\\d+)?")){
 							Double im = suspc(imp);//reformateamos el importe con decimales por punto.
