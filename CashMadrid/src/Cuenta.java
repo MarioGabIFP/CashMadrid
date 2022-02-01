@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Date;
 
 /**
  * Objeto que representa la cuenta de un cliente.

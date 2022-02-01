@@ -1,7 +1,9 @@
 import java.awt.EventQueue;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.swing.AbstractListModel;
@@ -40,6 +42,11 @@ public class BackEnd {
 	 * timeStamp de ejecución.
 	 */
 	public static SimpleDateFormat timeStamp = new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss");
+	
+	/**
+	 * Formateo del saldo
+	 */
+	private static NumberFormat frmtSld = new DecimalFormat("0.00€");
 	
 	/**
 	 * un solo cliente.
@@ -342,8 +349,9 @@ public class BackEnd {
 				//si selecciona "OK"
 				if(opt == 0) {
 					//Obtenemos el numero de referencia del registro seleccionado
-					String[] selNRef = selTrans.toString().split(" ");
-					int numRef = Integer.parseInt(selNRef[selNRef.length - 1]);
+					ArrayList<String> selNRef = new ArrayList<String>();
+					Collections.addAll(selNRef, selTrans.toString().split(" "));//Recojemos los datos.
+					int numRef = Integer.parseInt(selNRef.get(selNRef.size() - 1));
 					
 					//Establecemos los datos de la query y la modalidad de retorno
 					Query queryOBJ = new Query(null, 
@@ -667,22 +675,18 @@ public class BackEnd {
 							/*
 							 * generamos el Identificador interno de cuenta a insertar
 							 */
-							Integer[] idCu_s = new Integer[0];//Declaramos un nuevo Array de Integer Temporal.
-							
-							int d = 0;//declaramos un nuevo contador
+							ArrayList<Integer> idCu_s= new ArrayList<Integer>();//Declaramos un nuevo Array de Integer Temporal.
 							
 							//Obtenemos todos los Id de cuentas que hay en la base de datos.
 							for (Cuenta c: cu) {
-								idCu_s = Arrays.copyOf(idCu_s, d + 1);
-								idCu_s[d] = c.getIdCu();
-								d++;
+								idCu_s.add(c.getIdCu());
 							}
 							
 							//los ordenamos de menor a mayor.
-							Arrays.sort(idCu_s);
+							Collections.sort(idCu_s);
 							
 							//calculamos el nuevo Id de Cuenta
-							int idCu = idCu_s[idCu_s.length - 1] + 1;
+							int idCu = idCu_s.get(idCu_s.size() - 1) + 1;
 							
 							//obtenemos el Identificador del cliente al que vamos a asignar la cuenta
 							int idCli = gtUnCli(window.cliComboBox.getSelectedItem().toString()).getIdCli();
@@ -950,7 +954,7 @@ public class BackEnd {
 			obtnrTrn(cuen.getIdCu());
 		} else {//sino
 			//Pintamos el JList de las transferencias en Vacio
-			rllnrlst(new String[0], new String[0]);
+			rllnrlst(new ArrayList<String>(), new ArrayList<String>());
 		}
 	}
 	
@@ -974,7 +978,7 @@ public class BackEnd {
 							{ "Datos de la cuenta bancaria", "****************" }, // Cabecera que indicadora del inicio de los datos de la cuenta.
 							{ "IBAN", cuen.getIban() }, // IBAN de la cuenta.
 							{ "Entidad Bancaria", cuen.getNmbrbnc() }, // Nombre de la entidad bancaria de la cuenta.
-							{ "Saldo", cuen.getSaldo() }, // Saldo de la cuenta.
+							{ "Saldo", frmtSld.format(cuen.getSaldo()) }, // Saldo de la cuenta.
 							{ "Fecha Apertura", cuen.getFechaApertura() }, // Fecha de Apertura de la cuenta.
 							{ "Fecha Cierre", cuen.getFechaCierre() } // Fecha de cliente de la cuenta (Si la cuenta esta activa, obtendremos null y la celda se mostrará vacía).
 					}, new String[] { // Declaramos el objeto Array String[] que contendrá los nombres internos de las columnas (estás no se mostrarán en la ventana).
@@ -1145,17 +1149,15 @@ public class BackEnd {
 	 * @param idC - Identificador interno de la cuenta.
 	 */
 	private void obtnrTrn(Integer idC) {
-		String[] trnsfrncLstE = new String[0];//Declaramos el array de String para los Registros de las Transferencias Enviadas
-		String[] trnsfrncLstR = new String[0];//Declaramos el array de String para los Registros de las Transferencias Recibidas
+		ArrayList<String> trnsfrncLstE = new ArrayList<String>();//Declaramos el array de String para los Registros de las Transferencias Enviadas
+		ArrayList<String> trnsfrncLstR = new ArrayList<String>();//Declaramos el array de String para los Registros de las Transferencias Recibidas
 		for(Transferencia t: trans) { //Para cada transferencia
 			if (t.getOrigen() == idC) {//si la cuenta solicitada es el origen
 				//Formateamos los datos del destino
 				String dest = gtUnCliCu(t.getDestino()).getNmbr() + " " + gtUnCliCu(t.getDestino()).getApllds();
 				
-				//aumentamos en uno el array de registros
-				trnsfrncLstE = Arrays.copyOf(trnsfrncLstE, trnsfrncLstE.length + 1);
 				//Guardamos el registro en el Array
-				trnsfrncLstE[trnsfrncLstE.length - 1] = "Concepto: " + t.getCncpt() + " > Destino: " + dest + " > Importe: " + t.getImp() + " > Referencia: " + t.getRef();  
+				trnsfrncLstE.add("Concepto: " + t.getCncpt() + " > Destino: " + dest + " > Importe: " + frmtSld.format(t.getImp()) + " > Referencia: " + t.getRef());  
 			} else if (t.getDestino() == idC) {//Si no, Si la cuenta solicitada es el origen
 				/*
 				 * Formateamos los datos del origen
@@ -1170,10 +1172,8 @@ public class BackEnd {
 					ori = gtUnCliCu(org).getNmbr() + " " + gtUnCliCu(org).getApllds();
 				}
 				
-				//Aumentamos en uno el array de registros
-				trnsfrncLstR = Arrays.copyOf(trnsfrncLstR, trnsfrncLstR.length + 1);
-				//Guardamos el registro en el array
-				trnsfrncLstR[trnsfrncLstR.length - 1] = "Concepto: " + t.getCncpt() + " > Origen: " + ori + " > Importe: " + t.getImp() + " > Referencia: " + t.getRef();
+				//Guardamos el registro en el Array
+				trnsfrncLstR.add("Concepto: " + t.getCncpt() + " > Origen: " + ori + " > Importe: " + frmtSld.format(t.getImp()) + " > Referencia: " + t.getRef());  
 			}
 		}
 		
@@ -1187,7 +1187,7 @@ public class BackEnd {
 	 * @param trnsfrncRlzds - Registros de las transferencias realizadas.
 	 * @param trnsfrncRcbds - Registros de las transferencias emitidas.
 	 */
-	private void rllnrlst(String[] trnsfrncRlzds, String[] trnsfrncRcbds) {
+	private void rllnrlst(ArrayList<String> trnsfrncRlzds, ArrayList<String> trnsfrncRcbds) {
 		//Rellenamos el Jlist de las transferencias Realizadas
 		window.movDebe.setModel(new AbstractListModel<String>() {
 			/**
@@ -1195,20 +1195,20 @@ public class BackEnd {
 			 */
 			private static final long serialVersionUID = -640329577766975200L;
 			
-			String[] values = trnsfrncRlzds;//establecemos los valores con los registros
+			ArrayList<String> values = trnsfrncRlzds;//establecemos los valores con los registros
 			
 			/**
 			 * Funcion Heredada pra obtener el tamaño del JList
 			 */
 			public int getSize() {
-				return values.length;
+				return values.size();
 			}
 			
 			/**
 			 * Funcion heredada para obtener el valor de un registro en un indice X
 			 */
 			public String getElementAt(int index) {
-				return values[index];
+				return values.get(index);
 			}
 		});
 		
@@ -1219,20 +1219,20 @@ public class BackEnd {
 			 */
 			private static final long serialVersionUID = -640329577766975200L;
 			
-			String[] values = trnsfrncRcbds;//establecemos los valores con los registros
+			ArrayList<String> values = trnsfrncRcbds;//establecemos los valores con los registros
 			
 			/**
 			 * Funcion Heredada pra obtener el tamaño del JList
 			 */
 			public int getSize() {
-				return values.length;
+				return values.size();
 			}
 			
 			/**
 			 * Funcion heredada para obtener el valor de un registro en un indice X
 			 */
 			public String getElementAt(int index) {
-				return values[index];
+				return values.get(index);
 			}
 		});
 	}

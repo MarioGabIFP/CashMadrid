@@ -1,8 +1,10 @@
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 
 /**
  * Clase para conectar a la base de datos; esta clase es la que se encargará de realizar la conexión a la base de datos.
