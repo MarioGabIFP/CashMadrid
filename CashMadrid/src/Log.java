@@ -69,7 +69,7 @@ public class Log {
 		 */
 		FileWriter wrtFch = null;
 		/*
-		 * Declaración del PrintWriter para escrir un conjunto de caracteres en el fichero 
+		 * Declaración del PrintWriter (el boligrafo) para escrir un conjunto de caracteres en el fichero 
 		 */
 		PrintWriter wrtRg = null;
 		
@@ -80,7 +80,6 @@ public class Log {
 			wrtFch = new FileWriter(file,true);//Abrimos el fichero y lo preparamos para su escritura la final del mismo
 			wrtRg = new PrintWriter(wrtFch);//Preparamos el fichero para recibir un conjunto de caracteres
 			wrtRg.print(reg);//Escribimos en el fichero
-			wrtFch.close();//Cerramos el fichero
 		} catch (IOException e) {//Si surge algún error en tiempo de ejecución
 			if (!file.exists()) {//Si el fichero no existe
 				crte();//Lo creamos
@@ -93,6 +92,21 @@ public class Log {
 											  "Imposible escribir registro log de ejecución\nCausa: " + e, 
 											  "Cash Madrid - Error", 
 											  0);
+			}
+		} finally {
+			if (wrtFch != null) {
+				try {
+					wrtRg.close();//Cerramos el boligrafo
+					wrtFch.close();//Cerramos el fichero
+				} catch (IOException e) {
+					/*
+					 * Mostramos mensaje de error interno
+					 */
+					JOptionPane.showMessageDialog(null, 
+												  "Imposible cerrar el fichero log de ejecución\nCausa: " + e, 
+												  "Cash Madrid - Error", 
+												  0);
+				}
 			}
 		}
 	}

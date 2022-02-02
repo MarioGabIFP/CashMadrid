@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,15 +161,15 @@ public class Main {
 		Collections.addAll(userPass, login.getConStr().split(";"));//Recojemos los datos.
 		
 		conexion = new Conexion(userPass.get(0), userPass.get(1), log);//Establecemos la conexión
-		conexion.conect();//Conectamos
-		
+
 		//Probamos la conexion
-		if (conexion.getConexion() != null) { //Si la conexion se ha realizado correctamente
-			conexion.desconexion(); //Desconectamos
-			return true;//Devolvemos True
-		} else {//Si no
+		try {
+			conexion.conect();//Conectamos
+			return true;//Si la conexion se ha realizado correctamente devolvemos True
+		} catch (ClassNotFoundException | SQLException e) {// En el caso de error desconectamos
 			return false;//Devolvemos False
+		} finally {
+			conexion.desconexion(); //Desconectamos
 		}
-		
 	}
 }

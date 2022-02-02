@@ -53,7 +53,7 @@ public class Conexion {
 	/**
 	 * Metodo conect, se usará para establecer la conexion a la base de datos.
 	 */
-	public void conect() {
+	public void conect() throws SQLException, ClassNotFoundException {
 		try {
 			//Cargamos el DriverManager con el Class Loader
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -65,9 +65,13 @@ public class Conexion {
 					log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Conected to: " + url);
 				}
 			} catch (SQLException e) {
-				//Mostramos error en el caso de no poder conectar al abase de datos solicitada
+				/*
+				 * Mostramos error en el caso de no poder conectar al abase de datos solicitada
+				 */
+				//Escribimos en el log de eventos
 				log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - Unable to conected to: " + url);
 				log.newReg("\n" + new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss").format(new Date()) + " - SQL exception returned: " + e);
+				//Mostramos el Mensaje
 				JOptionPane.showMessageDialog(null, 
 						                      "Usuario o contraseña incorrectos.\nSi ha olvidado su contraseña, pongase en contacto con el administrador de sistemas", 
 										      "CashMadrid", 

@@ -120,8 +120,12 @@ public class Query {
 		//Declaramos y reinicializamos la query a construir
 		String query = null;
 		
-		//Conectamos con la base de datos
-		conexion.conect();
+		try {
+			conexion.conect();//Conectamos
+		} catch (ClassNotFoundException | SQLException e) {// En el caso de error desconectamos
+			log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+			return null;
+		}
 		
 		//Evaluamos el tipo de query solicitado
 		switch (this.type) {
@@ -335,7 +339,7 @@ public class Query {
 					prep(query);
 				} catch (NullPointerException f) {
 					//Si se sucede un error durante la ejecución
-					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + f);
 				}
 			}
 			
@@ -367,7 +371,7 @@ public class Query {
 					prep(query);
 				} catch (NullPointerException f) {
 					//Si se sucede un error durante la ejecución
-					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + f);
 				}
 			}
 			
@@ -382,7 +386,7 @@ public class Query {
 				prep(query);
 			} catch (NullPointerException f) {
 				//Si se sucede un error durante la ejecución
-				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: No hay una conexion establecida a la base de datos");
+				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + f);
 			}
 
 			return null;//como los Delete no devuelven ningún Dato, retornamos null
@@ -415,9 +419,9 @@ public class Query {
 			resultmtdt = result.getMetaData();
 		} catch (SQLException e) {//Si sucede error en la base de datos
 			log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + e);//Mostramos el error en la consola
+		} finally {
+			//Desconectamos de la base de datos
+			conexion.desconexion();
 		}
-		
-		//Desconectamos de la base de datos
-		conexion.desconexion();
 	}
 }
