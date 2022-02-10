@@ -326,14 +326,9 @@ public class Query {
 			String[] cols = this.cols.split(";");//Separamos los grupos de Columnas a insertar
 			
 			for (int i = 0;i < this.cant;i++) {//para cada Query solicitada
-				if(mod != null) {//si el modificador no es nulo
-					//Montamos con el modificador
-					query = this.type + " INTO "  + tab[i] + "(" + cols[i] + ")" + " VALUES (" + valIns[i] + ")" + this.mod + ";";
-				} else {//sino
-					//Montamos sin el modificador
-					query = this.type + " INTO "  + tab[i] + "(" + cols[i] + ")" + " VALUES (" + valIns[i] + ");";
-				}
-			
+				//Montamos la query
+				query = this.type + " INTO "  + tab[i] + "(" + cols[i] + ")" + " VALUES (" + valIns[i] + ");";
+				
 				try {
 					//Preparamos y ejecutamos la query construida
 					prep(query);
@@ -342,6 +337,7 @@ public class Query {
 					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + f);
 				}
 			}
+			
 			conexion.desconexion();//desconectamos de la base de datos
 			return null;//los Update no recuperan ninguún valor por lo que devolvemos nulo.
 		
@@ -362,8 +358,7 @@ public class Query {
 					//Montamos con el modificador
 					query = this.type + " " + tabs[i] + " SET " + colms[i]  + " = '" + valUpdt[i] + "'" + cond[i] + ";";
 				} else {//si no
-					//Montamos sin el modificador
-					query = this.type + " " + tabs[i] + " SET " + colms[i]  + " = '" + valUpdt[i] + "'" + cond[i] + ";";
+					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: Update sin Where");
 				}
 				
 				try {

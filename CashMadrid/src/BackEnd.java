@@ -485,7 +485,10 @@ public class BackEnd {
 	}
 	
 	/**
-	 * Método para transferir el saldo de las cuentas de un cliente a otro.
+	 * Método para traspasar el saldo de varias cuentas a una cuenta
+	 * 
+	 * @param cnts - ArrayList con las cuentas a traspasar
+	 * @return boolean - true, si se ha relizado correctamente; false, si se ha cancelado la operacion o si ha habido algún error
 	 */
 	protected boolean crrTransfMass(ArrayList<Cuenta> cnts) {
 		/*
@@ -538,7 +541,7 @@ public class BackEnd {
 					//Obtenemos el Saldo de cuenta origen
 					Double im = c.getSaldo();
 
-					if (im > 0) {
+					if (im != 0) {
 						//Obtenemos el ID de la cuenta destino
 						Integer idCu = cudes.getIdCu();
 						
@@ -555,9 +558,92 @@ public class BackEnd {
 						//ejecutamos el insert
 						queryOBJ.execute();
 						load();//volvemos a recoger los datos de la base de datos.
-						return true;
+						
 					}
 				}
+				
+				return true;
+			}
+			break;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Método para traspasar el saldo de una cuenta a otra
+	 * 
+	 * @param cnt - cuenta a traspasar
+	 * @return boolean - true, si se ha relizado correctamente; false, si se ha cancelado la operacion o si ha habido algún error
+	 */
+	protected boolean crrTransfUnic(Cuenta cnt) {
+		/*
+		 * Datos de la transferencia
+		 */
+		JTextField iban = new JTextField(); //IBAN de la cuenta a dar de alta
+		JTextField cncpt = new JTextField(); //Concepto de las transferencias
+		
+		//Declaramos el objeto con los input del ConfirmDialog
+		Object[] inputs = {"IBAN del destinatario: ", iban,
+						   "Concepto: ", cncpt};
+		
+		//Mostramos confirm dialog
+		int inpBool = JOptionPane.showConfirmDialog(null, inputs, "CashMadrid - Traspasar fondos", JOptionPane.OK_CANCEL_OPTION);
+		
+		switch (inpBool) {
+		case 0://si el usuario pulsa "OK"
+			
+			String bn = iban.getText();//obtenemos el iban destino
+			String cn = cncpt.getText();//obtenemos el concepto
+			
+			if (bn.isEmpty() || cn.isEmpty()) {//sin no se han rellenado los campos
+				//mostramos mensaje de error
+				JOptionPane.showMessageDialog(null, 
+						"Debes rellenar todos los campos", 
+						"CashMadrid", 
+						0, 
+						null);
+			} else if (!srchArr(bn, obtnrIBAN(cu))) {//si la cuenta destino no existe
+				//mostramos mensaje de error
+				JOptionPane.showMessageDialog(null, 
+						"IBAN del destinatario no encontrado", 
+						"CashMadrid", 
+						0, 
+						null);
+			} else if (gtUnCu(bn).getFechaCierre() != null) {//si la cuenta destino esta cerrada
+				//mostramos mensaje de error
+				JOptionPane.showMessageDialog(null, 
+						"La cuenta referenciada se encuentra dada de baja", 
+						"CashMadrid", 
+						0, 
+						null);
+			} else {//de lo contrario
+				Cuenta cudes = gtUnCu(bn);//Obtenemos la cuenta destino
+				
+				//Obtenemos Id de cuenta origen
+				Integer idCnt = cnt.getIdCu();
+				
+				//Obtenemos el Saldo de cuenta origen
+				Double im = cnt.getSaldo();
+				
+				//Obtenemos el ID de la cuenta destino
+				Integer idCu = cudes.getIdCu();
+				
+				//Establecemos los datos de la query y la modalidad de retorno
+				Query queryOBJ = new Query("COri, CDes, Imp, Cncpt",
+										   "transferencias",
+										   Statement.INSERT,
+										   null,
+										   idCnt + ", " + idCu + ", " + im + ", '" + cn + "'",
+										   null,
+										   conexion,
+										   1, 
+										   log);
+				//ejecutamos el insert
+				queryOBJ.execute();
+				load();//volvemos a recoger los datos de la base de datos.
+				
+				return true;
 			}
 			break;
 		}
@@ -647,7 +733,10 @@ public class BackEnd {
 		
 		//si selecciona 'OK'
 		if (opt == 0) {
-			ArrayList<Cuenta> cnts = gtCuTit(gtUnCli(window.cliComboBox.getSelectedItem().toString()).getNif());
+			//Obtenemos el cliente a dar de baja
+			Cliente cli = gtUnCli(window.cliComboBox.getSelectedItem().toString());
+			//obtenemos las cuentas del cliente
+			ArrayList<Cuenta> cnts = gtCuTit(cli.getNif());
 			Double sumsld = 0.0;
 			//Comprobamos si el cliente tiene o no saldo.
 			for (Cuenta c: cnts) {
@@ -657,7 +746,7 @@ public class BackEnd {
 				}
 			}
 			
-			if (sumsld > 0) {
+			if (sumsld != 0) {
 				int opcn = JOptionPane.showConfirmDialog(null, "Las cuentas del cliente tienen saldo, deberás transferirlos a otra cuenta o crear una nueva.\n¿Deseas Continuar?", "CashMadrid - Baja Cliente", 2);
 				if (opcn == 0) {
 					//Mostramos Option dialog
@@ -669,11 +758,10 @@ public class BackEnd {
 																	   "Crear Cuenta"
 															   }, 
 															   "Transferir");
-					
 					switch (inpBool) {
 					case 0:
 						if (crrTransfMass(cnts)) {
-							Qbjcli();
+							Qbjcli(cli.getIdCli());
 						}
 						break;
 					case 1:
@@ -685,20 +773,23 @@ public class BackEnd {
 													  null);
 						break;
 					}
-
 				}
+			} else {
+				Qbjcli(cli.getIdCli());
 			}
 		}
 	}
 	
-	protected void Qbjcli() {
+	/**
+	 * Método que lanza la query para dar de baja un cliente.
+	 */
+	protected void Qbjcli(int idClien) {
 		/*
  		 * Update para dar de baja un cliente y sus cuentas rellenando la fecha fin de cuenta 
  		 * y estableciendo el campo activ a false (TinyInt = 0)
  		 * Cada registro de la tabla corresponderá a un objeto. 
  		 */
  		//Establecemos los datos de la query y la modalidad de retorno
-		int idClien = gtUnCli(window.cliComboBox.getSelectedItem().toString()).getIdCli();
 		Query queryOBJ = new Query("FFIN;Activ",
 				   				   "asignacion;Clientes",
 				   				   Statement.UPDATE,
@@ -713,6 +804,29 @@ public class BackEnd {
 		load();//Volvemos a obtener los datos desde la base de datos.
 	}
 	
+	/*
+	 * Método que lanza la query para dar de baja una cuenta.
+	 */
+	protected void Qbjccu(int idCu) {
+		 /*
+	 		 * Update para dar de baja una cuenta rellenando la fecha fin de cuenta
+	 		 * Cada registro de la tabla corresponderá a un objeto. 
+	 		 */
+	 		//Establecemos los datos de la query y la modalidad de retorno
+			Query queryOBJ = new Query("FFIN",
+									   "asignacion",
+									   Statement.UPDATE,
+									   "WHERE IdCli = " + gtUnCliCu(idCu).getIdCli() + " AND IdCu = " + idCu,
+									   dtfrmt.format(new Date()),
+									   null,
+									   conexion,
+									   1, 
+									   log);
+			//Ejecutamos el Update
+			queryOBJ.execute();
+			load();//volvemos a obtener los datos de la base de datos.
+	 }
+	
 	/**
 	 * Método para dar de baja a una cuenta.
 	 */
@@ -724,23 +838,43 @@ public class BackEnd {
 			
 			//si el usuario pulsa en 'OK'
 			if (opt == 0) {
-				/*
-		 		 * Update para dar de baja una cuenta rellenando la fecha fin de cuenta
-		 		 * Cada registro de la tabla corresponderá a un objeto. 
-		 		 */
-		 		//Establecemos los datos de la query y la modalidad de retorno
-				Query queryOBJ = new Query("FFIN",
-										   "asignacion",
-										   Statement.UPDATE,
-										   "WHERE IdCli = " + gtUnCli(window.cliComboBox.getSelectedItem().toString()).getIdCli() + " AND IdCu = " + gtUnCu(window.cueComboBox.getSelectedItem().toString()).getIdCu(),
-										   dtfrmt.format(new Date()),
-										   null,
-										   conexion,
-										   1, 
-										   log);
-				//Ejecutamos el Update
-				queryOBJ.execute();
-				load();//volvemos a obtener los datos de la base de datos.
+				Cuenta cu = gtUnCu(window.cueComboBox.getSelectedItem().toString());
+				int idCu = cu.getIdCu();
+				
+				if (cu.getSaldo() != 0) {
+					int opcn = JOptionPane.showConfirmDialog(null, "La cuenta tiene saldo, deberás transferirlo a otra cuenta o crear una nueva.\n¿Deseas Continuar?", "CashMadrid - Baja Cliente", 2);
+					if (opcn == 0) {
+						//Mostramos Option dialog
+						int inpBool = JOptionPane.showOptionDialog(null, 
+																   "La cuenta tiene saldo, deberás transferirlo a otra cuenta o crear una nueva.\n¿Que vas a hacer?", 
+																   "CashMadrid - Baja Cliente", 2, 3, null,
+																   new Object[] {
+																		   "Transferir",
+																		   "Crear Cuenta"
+																   }, 
+																   "Transferir");
+						
+						switch (inpBool) {
+						case 0:
+							if (crrTransfUnic(cu)) {
+								Qbjccu(idCu);
+							}
+							break;
+						case 1:
+							//No implementado, mostramos mensaje de error
+							JOptionPane.showMessageDialog(null, 
+														  "Opción no disponible", 
+														  "CashMadrid", 
+														  0, 
+														  null);
+							break;
+						}
+
+					}
+				} else {
+					Qbjccu(idCu);
+				}
+				
 			}
 		} else {//si no
 			//mostramos error
@@ -1230,7 +1364,7 @@ public class BackEnd {
 	}
 	
 	/**
-	 * Método para Obtener el Cliente de la cuenta Solcitada.
+	 * Método para Obtener un unico Cliente partiendo de su DNI.
 	 * 
 	 * @param dni - DNI del cliente a extraer.
 	 * @return Cliente - Cliente obtenido de la consulta.
