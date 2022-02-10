@@ -310,7 +310,7 @@ public class Query {
 				//Si se sucede un error durante la ejecución
 				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + i);
 			}
-			
+			conexion.desconexion();//desconectamos de la base de datos
 			//Retornamos el resultado de la Query en formato Object
 			return resul;
 			
@@ -342,7 +342,7 @@ public class Query {
 					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + f);
 				}
 			}
-			
+			conexion.desconexion();//desconectamos de la base de datos
 			return null;//los Update no recuperan ninguún valor por lo que devolvemos nulo.
 		
 		case UPDATE://En el caso de haber solicitado un Update
@@ -374,7 +374,7 @@ public class Query {
 					log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + f);
 				}
 			}
-			
+			conexion.desconexion();//desconectamos de la base de datos
 			return null;//como los Update no devuelven ningún Dato, retornamos null
 		
 		case DELETE://En el caso de haber solicitado un Delete
@@ -388,9 +388,10 @@ public class Query {
 				//Si se sucede un error durante la ejecución
 				log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + f);
 			}
-
+			conexion.desconexion();//desconectamos de la base de datos
 			return null;//como los Delete no devuelven ningún Dato, retornamos null
 		default://En el caso de que no exista la opcion, retornamos null
+			conexion.desconexion();//desconectamos de la base de datos
 			return null;
 		}
 	}
@@ -412,16 +413,13 @@ public class Query {
 			 */
 			try {
 				result = statment.executeQuery();//ejecutamos y recogemos los datos.
+				//Obtenemos los metadatos de la query ejecutada
+				resultmtdt = result.getMetaData();
 			} catch (SQLException e) {//si se sucede alguna excepción a la hora de recoger Datos
 				statment.execute();//ejecutamos sin rellenar el result (Para Insert, Delete y Update)
 			}
-			//Obtenemos los metadatos de la query ejecutada
-			resultmtdt = result.getMetaData();
 		} catch (SQLException e) {//Si sucede error en la base de datos
 			log.newReg("\n" + timeStamp.format(new Date()) + " - Error: " + e);//Mostramos el error en la consola
-		} finally {
-			//Desconectamos de la base de datos
-			conexion.desconexion();
 		}
 	}
 }

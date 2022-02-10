@@ -165,9 +165,13 @@ public class Main {
 		//Probamos la conexion
 		try {
 			conexion.conect();//Conectamos
-			return true;//Si la conexion se ha realizado correctamente devolvemos True
+			if (conexion.getConexion() != null) {
+				return true;//Si la conexion se ha realizado correctamente devolvemos True
+			} else {
+				return false;//Si la conexion se ha realizado correctamente devolvemos True
+			}
 		} catch (ClassNotFoundException | SQLException e) {// En el caso de error desconectamos
-			return false;//Devolvemos False
+			return false;//Devolvemos False	
 		} finally {
 			conexion.desconexion(); //Desconectamos
 		}

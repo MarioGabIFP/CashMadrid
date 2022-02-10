@@ -359,7 +359,7 @@ public class Panel {
 		});
 		
 		/*
-		 * Capturar evento click en botón "Baja Cuenta"
+		 * Capturar evento click en botón "Baja Cliente"
 		 */
 		dltCli.addActionListener(new ActionListener() {
 					
